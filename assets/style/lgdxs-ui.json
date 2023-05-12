@@ -1675,7 +1675,7 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 	}
 	oval1: {
 		font: sub-title
-		fontColor: black
+		fontColor: color2-pressed
 		disabledFontColor: clear
 		up: button-oval-c
 		down: button-oval-c-p

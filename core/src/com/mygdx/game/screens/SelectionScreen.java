@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -43,10 +44,13 @@ public class SelectionScreen implements Screen {
     Texture charSheet2;
 
     TextButton.TextButtonStyle arrowStyle;
+    TextButton.TextButtonStyle textButtonStyle;
+
     TextButton rightArrowL;
     TextButton leftArrowL;
     TextButton rightArrowR;
     TextButton leftArrowR;
+    TextButton playButton;
 
     static int index = 0;
     static int index2 = 0;
@@ -66,14 +70,13 @@ public class SelectionScreen implements Screen {
         labelStyle = skin.get("c2", Label.LabelStyle.class);
         labelStyle.font = game.bigFont;
         selectLabel = new Label("SELECT YOUR CHARACTER", labelStyle);
-        selectLabel.setPosition(775,Gdx.graphics.getHeight() - 200);
+        selectLabel.setPosition(775, Gdx.graphics.getHeight() - 200);
 
         /*
          * Left character animation
          */
         charSheet = new Texture(Gdx.files.internal("sprites/sprites.png"));
-        tmp = TextureRegion.split(charSheet, (int) (charSheet.getWidth() / (game.spriteFrameCols * 3.005f)),
-                charSheet.getHeight());
+        tmp = TextureRegion.split(charSheet, (int) (charSheet.getWidth() / (game.spriteFrameCols * 3.005f)), charSheet.getHeight());
         spriteImage = new Image();
         spriteImage.setPosition(300, Gdx.graphics.getHeight() - 650);
         spriteImage.setScale(3);
@@ -84,17 +87,19 @@ public class SelectionScreen implements Screen {
          * Right character animation
          */
         charSheet2 = new Texture(Gdx.files.internal("sprites/sprites.png"));
-        tmp = TextureRegion.split(charSheet2, (int) (charSheet2.getWidth() / (game.spriteFrameCols * 3.005f)),
-                charSheet2.getHeight());
+        tmp = TextureRegion.split(charSheet2, (int) (charSheet2.getWidth() / (game.spriteFrameCols * 3.005f)), charSheet2.getHeight());
         spriteImage2 = new Image();
         spriteImage2.setPosition(Gdx.graphics.getWidth() - 550, Gdx.graphics.getHeight() - 650);
         spriteImage2.setScale(3);
 
         changeSprite("red", false);
 
-        configureArrowButtons();
+        configureButtons();
         handleButtonClick();
 
+        /*
+         * Add actors
+         */
         stage.addActor(selectLabel);
         stage.addActor(spriteImage);
         stage.addActor(spriteImage2);
@@ -102,41 +107,53 @@ public class SelectionScreen implements Screen {
         stage.addActor(rightArrowR);
         stage.addActor(leftArrowL);
         stage.addActor(leftArrowR);
+        stage.addActor(playButton);
     }
 
     /**
      * Button configuration
      */
-    private void configureArrowButtons(){
+    private void configureButtons() {
+
         arrowStyle = skin.get("oval2", TextButton.TextButtonStyle.class);
         arrowStyle.font = game.bigFont;
+
+
+        playButton = new TextButton("PLAY", game.textButtonStyle);
+        playButton.setPosition((float) Gdx.graphics.getWidth() * .97f/2 , (float) Gdx.graphics.getHeight() - 660);
 
         rightArrowL = new TextButton(">", arrowStyle);
         rightArrowL.setPosition(500, Gdx.graphics.getHeight() - 660);
 
-        leftArrowL  = new TextButton("<", arrowStyle);
+        leftArrowL = new TextButton("<", arrowStyle);
         leftArrowL.setPosition(250, Gdx.graphics.getHeight() - 660);
 
         rightArrowR = new TextButton(">", arrowStyle);
         rightArrowR.setPosition(Gdx.graphics.getWidth() - 325, Gdx.graphics.getHeight() - 660);
 
-        leftArrowR  = new TextButton("<", arrowStyle);
+        leftArrowR = new TextButton("<", arrowStyle);
         leftArrowR.setPosition(Gdx.graphics.getWidth() - 575, Gdx.graphics.getHeight() - 660);
-
-
     }
 
     /**
      * Handle the left and right button click
      */
-    private void handleButtonClick(){
+    private void handleButtonClick() {
+
+        playButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+
+                game.setScreen(new PlayScreen(game));
+            }
+        });
 
         rightArrowL.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 index++;
 
-                if(index >= game.spriteNames.size()){
+                if (index >= game.spriteNames.size()) {
                     index = 0;
                 }
 
@@ -148,7 +165,7 @@ public class SelectionScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 index--;
-                if(index < 0){
+                if (index < 0) {
                     index = game.spriteNames.size() - 1;
                 }
 
@@ -161,7 +178,7 @@ public class SelectionScreen implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 index2++;
 
-                if(index2 >= game.spriteNames.size()){
+                if (index2 >= game.spriteNames.size()) {
                     index2 = 0;
                 }
 
@@ -173,14 +190,13 @@ public class SelectionScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 index2--;
-                if(index2 < 0){
+                if (index2 < 0) {
                     index2 = game.spriteNames.size() - 1;
                 }
 
                 changeSprite(game.spriteNames.get(index2), false);
             }
         });
-
     }
 
     @Override
@@ -190,7 +206,7 @@ public class SelectionScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0,0,0,1);
+        ScreenUtils.clear(0, 0, 0, 1);
         camera.update();
 
         stateTime += Gdx.graphics.getDeltaTime();
@@ -237,6 +253,7 @@ public class SelectionScreen implements Screen {
 
     /**
      * Handle the animation of the sprites on the screen
+     *
      * @param spriteName the name of the sprite character
      * @param left refer to left player
      */
@@ -248,7 +265,7 @@ public class SelectionScreen implements Screen {
         for (int i = listPosition; i < game.spriteFrameCols + listPosition; i++) {
             walkFrames[index++] = tmp[0][i];
         }
-        if(left){
+        if (left) {
             charAnimation = new Animation<>(0.200f, walkFrames);
         } else {
             charAnimation2 = new Animation<>(0.200f, walkFrames);
