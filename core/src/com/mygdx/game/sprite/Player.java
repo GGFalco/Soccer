@@ -1,6 +1,5 @@
 package com.mygdx.game.sprite;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
@@ -10,30 +9,44 @@ public class Player extends Sprite {
 
     public World world;
     public Body b2body;
-    private TextureRegion playerStand;
+    float x;
+    float y;
 
-    public Player (World world, PlayScreen screen){
+    public Player (World world, PlayScreen screen, float x, float y){
+
         super(screen.getAtlas().findRegion("c1sprite"));
+
         this.world = world;
+        this.x = x;
+        this.y = y;
+
         definePlayer();
 
-        playerStand = new TextureRegion(getTexture(),0, 0, 97, 97 );
-        setBounds(0, 0, 96 , 119);
+        TextureRegion playerStand = new TextureRegion(getTexture(), 0, 0, 97, 97);
+        setBounds(0, 0, 97 * 1.2f, 119*1.2f );
         setRegion(playerStand);
     }
 
+    /**
+     * Physic creation of rectangular player
+     */
     public void definePlayer(){
-        BodyDef bdef = new BodyDef();
-        bdef.position.set(100, Gdx.graphics.getHeight() - 875);
-        bdef.type = BodyDef.BodyType.DynamicBody;
-        b2body = world.createBody(bdef);
 
+        BodyDef bdef = new BodyDef();
+        bdef.position.set(x , y);
+        bdef.type = BodyDef.BodyType.DynamicBody;
+
+        b2body = world.createBody(bdef);
         b2body.setUserData(this);
-        FixtureDef fdef = new FixtureDef();
-        CircleShape shape = new CircleShape();
-        shape.setRadius(50);
-        fdef.shape = shape;
-        b2body.createFixture(fdef);
+
+        FixtureDef fixtureDef = new FixtureDef();
+
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.setAsBox(30,70);
+
+        fixtureDef.shape = polygonShape;
+        b2body.createFixture(fixtureDef);
+
 
     }
 }

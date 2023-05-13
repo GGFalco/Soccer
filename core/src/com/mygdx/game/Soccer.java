@@ -9,9 +9,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.mygdx.game.screens.WelcomeScreen;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Soccer extends Game {
+
+    public static final int PPM = 48;
+    public static final int SCREEN_WIDTH = 1920;
+    public static final int SCREEN_HEIGHT = 1080;
 
     public SpriteBatch batch;
     public BitmapFont bigFont;
