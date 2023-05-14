@@ -9,12 +9,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Soccer;
+import com.mygdx.game.misc.ListenerClass;
 import com.mygdx.game.sprite.Ball;
 import com.mygdx.game.sprite.Player;
 import com.mygdx.game.world.Ground;
@@ -23,6 +23,8 @@ import com.mygdx.game.world.Wall;
 public class PlayScreen extends Stage implements Screen {
 
     final Soccer game;
+
+    ListenerClass listener;
 
 
     Stage stage;
@@ -44,9 +46,11 @@ public class PlayScreen extends Stage implements Screen {
     Wall leftWall;
     Wall rightWall;
 
+
     public PlayScreen(final Soccer game) {
 
-        super(new FitViewport(48f,28f, new OrthographicCamera(48f,28f)));
+        //super(new FitViewport(48f,28f, new OrthographicCamera(48f,28f)));
+        super(new ScreenViewport(new OrthographicCamera(0.508f, 0.28575f)));
 
         atlas = new TextureAtlas("sprite_head.atlas");
 
@@ -55,8 +59,9 @@ public class PlayScreen extends Stage implements Screen {
         this.game = game;
         this.skin = game.skin;
         this.stage = new Stage();
-        this.camera = new OrthographicCamera(1920f, 1080f);
-        camera.setToOrtho(false, 1920f, 1080f);
+        this.camera = new OrthographicCamera(Soccer.SCREEN_WIDTH / Soccer.PPM, Soccer.SCREEN_HEIGHT / Soccer.PPM);
+        //camera.setToOrtho(false, 0.508f, 0.28575f);
+        camera.position.set(Soccer.SCREEN_WIDTH / Soccer.PPM / 2f, Soccer.SCREEN_HEIGHT / Soccer.PPM / 2f, 0);
         Gdx.input.setInputProcessor(this);
 
 
@@ -71,7 +76,8 @@ public class PlayScreen extends Stage implements Screen {
      */
     public void environmentConfiguration(){
 
-        world = new World(new Vector2(0, -1000), true);
+        world = new World(new Vector2(0, -10), true);
+        world.setContactListener(listener);
         b2dr = new Box2DDebugRenderer();
 
         player = new Player(world, this, 200, Gdx.graphics.getHeight() - 850);
@@ -103,8 +109,8 @@ public class PlayScreen extends Stage implements Screen {
         world.step(1/60f, 6, 2);
         b2dr.render(world, camera.combined);
 
-        camera.viewportWidth = Gdx.graphics.getWidth();
-        camera.viewportHeight = Gdx.graphics.getHeight();
+        camera.viewportWidth = 1920;
+        camera.viewportHeight = 1080;
 
         camera.update();
 
@@ -125,7 +131,7 @@ public class PlayScreen extends Stage implements Screen {
 
 
         game.batch.begin();
-
+        game.batch.setProjectionMatrix(camera.combined);
         //backgroundSprite.draw(game.batch, 1);
         player.draw(game.batch, 1);
         ball.draw(game.batch, 1);
@@ -139,23 +145,30 @@ public class PlayScreen extends Stage implements Screen {
     }
 
     public void handleMovements(){
-        if(Gdx.input.isKeyPressed(Input.Keys.UP)){
+        if(Gdx.input.isKeyPressed(Input.Keys.UP) ){
             System.out.println("UP");
-            player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2(0, 1f),
+                    player.b2body.getWorldCenter(), true);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) ){
-            player.b2body.applyLinearImpulse(new Vector2(4f, 0), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2(14f, 0), player.b2body.getWorldCenter(), true);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-            player.b2body.applyLinearImpulse(new Vector2(-4f, 0), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2(-14f, 0), player.b2body.getWorldCenter(), true);
         }
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && player.b2body.getLinearVelocity().x >= -2){
-            player.b2body.applyLinearImpulse(new Vector2(0, -4f), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2(0, -1f), player.b2body.getWorldCenter(), true);
         }
+
+
+
     }
 
     @Override
     public void resize(int width, int height) {
+
+        camera.setToOrtho(false, width * Soccer.SCREEN_HEIGHT / height, Soccer.SCREEN_HEIGHT);
+        game.batch.setProjectionMatrix(camera.combined);
 
     }
 
