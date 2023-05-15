@@ -18,6 +18,10 @@ public class Soccer extends Game {
     public static final int SCREEN_HEIGHT = 1080;
     public static final float V_HEIGHT = SCREEN_HEIGHT / PPM;
 
+    public static final short BIT_BALL = 2;
+    public static final short BIT_NET = 4;
+    public static final short BIT_PLAYER = 8;
+
     public SpriteBatch batch;
     public BitmapFont bigFont;
     public BitmapFont mediumFont;
@@ -70,4 +74,5 @@ public class Soccer extends Game {
         bigFont.dispose();
         skin.dispose();
     }
+
 }

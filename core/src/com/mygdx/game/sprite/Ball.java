@@ -9,7 +9,7 @@ import com.mygdx.game.Soccer;
 
 public class Ball extends Sprite {
 
-    World world;
+    public World world;
     public Body b2body;
     float x;
     float y;
@@ -26,6 +26,7 @@ public class Ball extends Sprite {
         TextureRegion soccerBall = new TextureRegion(soccerTexture);
         setBounds(0, 0, 50 / Soccer.PPM, 50 / Soccer.PPM);
         setRegion(soccerBall);
+
     }
 
     public void defineBall(){
@@ -35,16 +36,18 @@ public class Ball extends Sprite {
         bdef.type = BodyDef.BodyType.DynamicBody;
 
         b2body = world.createBody(bdef);
-        b2body.setUserData(this);
+        b2body.setUserData("ball");
 
         FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.restitution = .7f;
+        fixtureDef.filter.categoryBits = Soccer.BIT_BALL;
 
         CircleShape circleShape = new CircleShape();
         circleShape.setRadius(20 / Soccer.PPM);
 
 
         fixtureDef.shape = circleShape;
-        b2body.createFixture(fixtureDef);
+        b2body.createFixture(fixtureDef).setUserData("ball");
 
         circleShape.dispose();
     }

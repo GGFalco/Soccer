@@ -14,17 +14,19 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Soccer;
-import com.mygdx.game.misc.ListenerClass;
+import com.mygdx.game.misc.MyContactListener;
 import com.mygdx.game.sprite.Ball;
 import com.mygdx.game.sprite.Player;
 import com.mygdx.game.world.Ground;
+import com.mygdx.game.world.Net;
 import com.mygdx.game.world.Wall;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayScreen extends Stage implements Screen {
 
     final Soccer game;
-
-    ListenerClass listener;
 
 
     Stage stage;
@@ -35,22 +37,23 @@ public class PlayScreen extends Stage implements Screen {
     Sprite backgroundSprite;
 
     TextureAtlas atlas;
-    private  World world;
-    private  Box2DDebugRenderer b2dr;
-
+    private World world;
+    private Box2DDebugRenderer b2dr;
 
     Player player;
-    Ball ball;
+    static Ball ball;
     Ground ground;
     Ground sky;
     Wall leftWall;
     Wall rightWall;
-
+    Ground leftDoor;
+    Ground rightDoor;
+    Net leftSoccerGoal;
+    Net rightSoccerGoal;
 
     public PlayScreen(final Soccer game) {
 
-        //super(new FitViewport(48f,28f, new OrthographicCamera(48f,28f)));
-        super(new ScreenViewport(new OrthographicCamera(1920,1080)));
+        super(new ScreenViewport(new OrthographicCamera(1920, 1080)));
 
         //atlas = new TextureAtlas("sprite_head.atlas");
         atlas = new TextureAtlas("char1.atlas");
@@ -64,36 +67,35 @@ public class PlayScreen extends Stage implements Screen {
 
         environmentConfiguration();
 
-
         backgroundScreen = new Texture(Gdx.files.internal("backgrounds/sfondo_partita.png"));
         backgroundSprite = new Sprite(backgroundScreen);
         backgroundSprite.setSize(Gdx.graphics.getWidth() / Soccer.PPM, Gdx.graphics.getHeight() / Soccer.PPM);
-
     }
 
     /**
      * Environment creation in terms of assets and sprites
      */
-    public void environmentConfiguration(){
+    public void environmentConfiguration() {
 
         world = new World(new Vector2(0, -10), true);
-        world.setContactListener(listener);
+        //world.setContactListener(listener);
         b2dr = new Box2DDebugRenderer();
 
         player = new Player(world, this, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM);
         ball = new Ball(world, Soccer.V_WIDTH / 2, Soccer.V_HEIGHT / 2);
+        System.out.println("Prima: " + ball.b2body.getPosition());
+        ground = new Ground(world, 0, (Soccer.V_HEIGHT / 8) + (20 / Soccer.PPM), 1920, 10);
+        sky = new Ground(world, 0, Soccer.V_HEIGHT, 1920, 10);
 
+        leftDoor = new Ground(world, 0, (Soccer.SCREEN_HEIGHT - 625) / Soccer.PPM, 120, 18);
+        rightDoor = new Ground(world, Soccer.SCREEN_WIDTH / Soccer.PPM, (Soccer.SCREEN_HEIGHT - 625) / Soccer.PPM, 120, 18);
 
-        ground = new Ground(world, 0, (Soccer.V_HEIGHT / 8) + (20 / Soccer.PPM));
-        sky = new Ground(world, 0, Soccer.V_HEIGHT);
-
+        leftSoccerGoal = new Net(world, 20 / Soccer.PPM, (Soccer.SCREEN_HEIGHT - 790) / Soccer.PPM, 20, 170, "leftNet");
+        rightSoccerGoal = new Net(world, (Soccer.SCREEN_WIDTH - 20) / Soccer.PPM, (Soccer.SCREEN_HEIGHT - 790) / Soccer.PPM, 20, 170, "rightNet");
 
         leftWall = new Wall(world, 0, 0);
         rightWall = new Wall(world, Soccer.V_WIDTH, 0);
-
     }
-
-
 
     public TextureAtlas getAtlas() {
         return atlas;
@@ -104,9 +106,9 @@ public class PlayScreen extends Stage implements Screen {
 
     }
 
-    public void update(){
+    public void update() {
 
-        world.step(1/60f, 6, 2);
+        world.step(1 / 60f, 6, 2);
         b2dr.render(world, camera.combined);
 
         camera.viewportWidth = Soccer.V_WIDTH;
@@ -126,12 +128,15 @@ public class PlayScreen extends Stage implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         update();
+        handleCollision();
         handleMovements();
+
+
 
         game.batch.begin();
 
         game.batch.setProjectionMatrix(camera.combined);
-        //backgroundSprite.draw(game.batch, 1);
+        backgroundSprite.draw(game.batch, .1f);
         player.draw(game.batch, 1);
         ball.draw(game.batch, 1);
 
@@ -140,24 +145,78 @@ public class PlayScreen extends Stage implements Screen {
         stage.draw();
     }
 
-    public void handleMovements(){
-        if(Gdx.input.isKeyPressed(Input.Keys.UP) ){
-            System.out.println("UP");
-            player.b2body.applyLinearImpulse(new Vector2(0, 1.5f),
-                    player.b2body.getWorldCenter(), true);
+    public void handleCollision() {
+
+        world.setContactListener(new ContactListener() {
+            @Override
+            public void beginContact(Contact contact) {
+                Fixture fA = contact.getFixtureA();
+                Fixture fB = contact.getFixtureB();
+
+                if (fA.getUserData() == "leftNet" && fB.getUserData() == "ball") {
+                    System.out.println("GOAL LEFT");
+
+                    final Body toRemove = fA.getBody().getType() == BodyDef.BodyType.DynamicBody ? fA.getBody() :
+                            fB.getBody();
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            world.destroyBody(toRemove);
+                            ball = new Ball(world, Soccer.V_WIDTH / 2, Soccer.V_HEIGHT / 2);
+                        }
+                    });
+
+
+                }
+
+
+                if (fA.getUserData() == "rightNet" && fB.getUserData() == "ball") {
+
+                    System.out.println("GOAL right");
+
+                    final Body toRemove = fA.getBody().getType() == BodyDef.BodyType.DynamicBody ? fA.getBody() :
+                            fB.getBody();
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            world.destroyBody(toRemove);
+                            ball = new Ball(world, Soccer.V_WIDTH / 2, Soccer.V_HEIGHT / 2);
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void endContact(Contact contact) {
+
+            }
+
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {
+
+            }
+
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {
+
+            }
+        });
+    }
+
+    public void handleMovements() {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            player.b2body.applyLinearImpulse(new Vector2(0, 1.5f), player.b2body.getWorldCenter(), true);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) ){
-            player.b2body.applyLinearImpulse(new Vector2(.1f, 0), player.b2body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            player.b2body.applyLinearImpulse(new Vector2(.22f, 0), player.b2body.getWorldCenter(), true);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-            player.b2body.applyLinearImpulse(new Vector2(-.1f, 0), player.b2body.getWorldCenter(), true);
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            player.b2body.applyLinearImpulse(new Vector2(-.22f, 0), player.b2body.getWorldCenter(), true);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && player.b2body.getLinearVelocity().x >= -2){
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && player.b2body.getLinearVelocity().x >= -2) {
             player.b2body.applyLinearImpulse(new Vector2(0, -1.5f), player.b2body.getWorldCenter(), true);
         }
-
-
-
     }
 
     @Override

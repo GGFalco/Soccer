@@ -44,6 +44,7 @@ public class Player extends Sprite {
         b2body.setUserData(this);
 
         FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.filter.categoryBits = Soccer.BIT_PLAYER;
 
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.setAsBox(30 / Soccer.PPM,70 / Soccer.PPM);

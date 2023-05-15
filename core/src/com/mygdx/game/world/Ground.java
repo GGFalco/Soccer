@@ -10,12 +10,16 @@ public class Ground extends Sprite {
     public Body b2body;
     float x;
     float y;
+    public float hX;
+    public float hY;
 
-    public Ground(World world, float x, float y){
+    public Ground(World world, float x, float y, float hX, float hY){
 
         this.world = world;
         this.x = x;
         this.y = y;
+        this.hX = hX;
+        this.hY = hY;
 
         defineGround();
     }
@@ -32,7 +36,7 @@ public class Ground extends Sprite {
         FixtureDef fixtureDef = new FixtureDef();
 
         PolygonShape ground = new PolygonShape();
-        ground.setAsBox(1920 / Soccer.PPM, 10 / Soccer.PPM);
+        ground.setAsBox(hX / Soccer.PPM, hY / Soccer.PPM);
 
         fixtureDef.shape = ground;
 
