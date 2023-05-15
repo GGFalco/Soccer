@@ -3,6 +3,7 @@ package com.mygdx.game.world;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.*;
+import com.mygdx.game.Soccer;
 
 public class Wall extends Sprite {
 
@@ -32,7 +33,7 @@ public class Wall extends Sprite {
         FixtureDef fixtureDef = new FixtureDef();
 
         PolygonShape ground = new PolygonShape();
-        ground.setAsBox(28, Gdx.graphics.getHeight());
+        ground.setAsBox(28 / Soccer.PPM, Gdx.graphics.getHeight() / Soccer.PPM);
 
         fixtureDef.shape = ground;
 

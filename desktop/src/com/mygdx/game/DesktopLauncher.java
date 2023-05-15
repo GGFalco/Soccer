@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.physics.box2d.ContactFilter;
 import com.mygdx.game.Soccer;
 
 // Please note that on macOS your application needs to be started with the -XstartOnFirstThread JVM argument
@@ -10,6 +11,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("Soccer");
+		config.setResizable(false);
 		config.setWindowedMode(1920,1080);
 		new Lwjgl3Application(new Soccer(), config);
 	}

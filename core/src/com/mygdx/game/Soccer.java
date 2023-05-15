@@ -12,10 +12,11 @@ import java.util.ArrayList;
 
 public class Soccer extends Game {
 
-    public static final int PPM = 100;
+    public static final float PPM = 100f;
     public static final int SCREEN_WIDTH = 1920;
+    public static final float V_WIDTH = SCREEN_WIDTH / PPM;
     public static final int SCREEN_HEIGHT = 1080;
-    public static final float ASPECT_RATIO = (float) SCREEN_WIDTH / (float) SCREEN_HEIGHT;
+    public static final float V_HEIGHT = SCREEN_HEIGHT / PPM;
 
     public SpriteBatch batch;
     public BitmapFont bigFont;

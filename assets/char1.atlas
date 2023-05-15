@@ -1,0 +1,13 @@
+
+char1.png
+size: 544, 107
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+char1-walk
+  rotate: false
+  xy: 0, 0
+  size: 544, 107
+  orig: 580, 170
+  offset: 15, 32
+  index: -1

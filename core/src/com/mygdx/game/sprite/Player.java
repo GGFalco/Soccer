@@ -3,6 +3,7 @@ package com.mygdx.game.sprite;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
+import com.mygdx.game.Soccer;
 import com.mygdx.game.screens.PlayScreen;
 
 public class Player extends Sprite {
@@ -14,7 +15,8 @@ public class Player extends Sprite {
 
     public Player (World world, PlayScreen screen, float x, float y){
 
-        super(screen.getAtlas().findRegion("c1sprite"));
+        //super(screen.getAtlas().findRegion("c1sprite"));
+        super(screen.getAtlas().findRegion("char1-walk"));
 
         this.world = world;
         this.x = x;
@@ -22,8 +24,10 @@ public class Player extends Sprite {
 
         definePlayer();
 
-        TextureRegion playerStand = new TextureRegion(getTexture(), 0, 0, 97, 97);
-        setBounds(0, 0, 97 * 1.2f, 119*1.2f );
+//        TextureRegion playerStand = new TextureRegion(getTexture(), 0, 0, 97, 119);
+//        setBounds(0, 0, 97 * 1.2f / Soccer.PPM , 119 * 1.2f / Soccer.PPM);
+        TextureRegion playerStand = new TextureRegion(getTexture(), 0, 0, 77, 107);
+        setBounds(0, 0, 77 * 1.6f / Soccer.PPM , 107 * 1.7f / Soccer.PPM);
         setRegion(playerStand);
     }
 
@@ -33,7 +37,7 @@ public class Player extends Sprite {
     public void definePlayer(){
 
         BodyDef bdef = new BodyDef();
-        bdef.position.set(x , y);
+        bdef.position.set(x, y);
         bdef.type = BodyDef.BodyType.DynamicBody;
 
         b2body = world.createBody(bdef);
@@ -42,10 +46,13 @@ public class Player extends Sprite {
         FixtureDef fixtureDef = new FixtureDef();
 
         PolygonShape polygonShape = new PolygonShape();
-        polygonShape.setAsBox(30,70);
+        polygonShape.setAsBox(30 / Soccer.PPM,70 / Soccer.PPM);
+
 
         fixtureDef.shape = polygonShape;
         b2body.createFixture(fixtureDef);
+
+        polygonShape.dispose();
 
 
     }

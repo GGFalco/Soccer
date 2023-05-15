@@ -2,6 +2,7 @@ package com.mygdx.game.world;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.*;
+import com.mygdx.game.Soccer;
 
 public class Ground extends Sprite {
 
@@ -31,7 +32,7 @@ public class Ground extends Sprite {
         FixtureDef fixtureDef = new FixtureDef();
 
         PolygonShape ground = new PolygonShape();
-        ground.setAsBox(1920, 10);
+        ground.setAsBox(1920 / Soccer.PPM, 10 / Soccer.PPM);
 
         fixtureDef.shape = ground;
 

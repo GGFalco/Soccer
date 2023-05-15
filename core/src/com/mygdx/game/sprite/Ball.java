@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
+import com.mygdx.game.Soccer;
 
 public class Ball extends Sprite {
 
@@ -23,7 +24,7 @@ public class Ball extends Sprite {
 
         Texture soccerTexture = new Texture(Gdx.files.internal("sprites/ball.png"));
         TextureRegion soccerBall = new TextureRegion(soccerTexture);
-        setBounds(0, 0, 50, 50);
+        setBounds(0, 0, 50 / Soccer.PPM, 50 / Soccer.PPM);
         setRegion(soccerBall);
     }
 
@@ -39,10 +40,12 @@ public class Ball extends Sprite {
         FixtureDef fixtureDef = new FixtureDef();
 
         CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(20);
+        circleShape.setRadius(20 / Soccer.PPM);
 
 
         fixtureDef.shape = circleShape;
         b2body.createFixture(fixtureDef);
+
+        circleShape.dispose();
     }
 }
