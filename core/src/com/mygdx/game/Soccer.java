@@ -21,6 +21,7 @@ public class Soccer extends Game {
     public static final short BIT_BALL = 2;
     public static final short BIT_NET = 4;
     public static final short BIT_PLAYER = 8;
+    public static final short BIT_FOOT = 16;
 
     public SpriteBatch batch;
     public BitmapFont bigFont;

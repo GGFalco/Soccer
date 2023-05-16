@@ -49,9 +49,8 @@ public class PlayScreen extends Stage implements Screen {
     public PlayScreen(final Soccer game) {
 
         super(new ScreenViewport(new OrthographicCamera(1920, 1080)));
-
-        //atlas = new TextureAtlas("sprite_head.atlas");
-        atlas = new TextureAtlas("char1.atlas");
+        String atl = "char1.atlas";
+        atlas = new TextureAtlas(atl);
 
         this.game = game;
         this.skin = game.skin;
@@ -73,7 +72,6 @@ public class PlayScreen extends Stage implements Screen {
     public void environmentConfiguration() {
 
         world = new World(new Vector2(0, -10), true);
-        //world.setContactListener(listener);
         b2dr = new Box2DDebugRenderer();
 
         player = new Player(world, this, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM);
@@ -101,7 +99,7 @@ public class PlayScreen extends Stage implements Screen {
 
     }
 
-    public void update() {
+    public void update(float dt) {
 
         world.step(1 / 60f, 6, 2);
         b2dr.render(world, camera.combined);
@@ -110,8 +108,8 @@ public class PlayScreen extends Stage implements Screen {
         camera.viewportHeight = Soccer.V_HEIGHT;
 
         camera.update();
+        player.update(dt);
 
-        player.setCenter(player.b2body.getPosition().x, player.b2body.getPosition().y + (20 / Soccer.PPM));
         ball.setCenter(ball.b2body.getPosition().x, ball.b2body.getPosition().y);
     }
 
@@ -121,15 +119,15 @@ public class PlayScreen extends Stage implements Screen {
         Gdx.gl.glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        update();
+        update(delta);
+
         handleCollision();
         handleMovements();
 
+        game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
 
-        game.batch.setProjectionMatrix(camera.combined);
-        backgroundSprite.draw(game.batch, 1f);
-
+        backgroundSprite.draw(game.batch, .1f);
         player.draw(game.batch, 1);
         ball.draw(game.batch, 1);
 
@@ -204,11 +202,11 @@ public class PlayScreen extends Stage implements Screen {
      */
     public void handleMovements() {
 
-
+        //System.out.println(player.b2body.getPosition());
         if (Gdx.input.isKeyPressed(Input.Keys.UP) && player.b2body.getLinearVelocity().y <= 4f && player.b2body.getPosition().y <= 2.365f) {
 
-            player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
-
+            //player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
+            player.jump();
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 3f) {
@@ -219,6 +217,11 @@ public class PlayScreen extends Stage implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -3f) {
 
             player.b2body.applyLinearImpulse(new Vector2(-.8f, 0), player.b2body.getWorldCenter(), true);
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
+            System.out.println("Kick");
+            player.kick();
         }
     }
 
@@ -247,5 +250,7 @@ public class PlayScreen extends Stage implements Screen {
         skin.dispose();
         stage.dispose();
         atlas.dispose();
+        b2dr.dispose();
+        world.dispose();
     }
 }
