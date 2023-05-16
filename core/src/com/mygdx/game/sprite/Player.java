@@ -1,8 +1,10 @@
 package com.mygdx.game.sprite;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Soccer;
 import com.mygdx.game.screens.PlayScreen;
 
@@ -12,6 +14,7 @@ public class Player extends Sprite {
     public Body b2body;
     float x;
     float y;
+    public Animation playerRun;
 
     public Player (World world, PlayScreen screen, float x, float y){
 
@@ -22,13 +25,19 @@ public class Player extends Sprite {
         this.x = x;
         this.y = y;
 
+        Array<TextureRegion> frames = new Array<TextureRegion>();
+
+        for(int i = 0; i < 7; i++){
+            frames.add(new TextureRegion(getTexture(), i * 77, 0, 77, 107));
+        }
+        playerRun = new Animation(0.2f, frames);
+
         definePlayer();
 
-//        TextureRegion playerStand = new TextureRegion(getTexture(), 0, 0, 97, 119);
-//        setBounds(0, 0, 97 * 1.2f / Soccer.PPM , 119 * 1.2f / Soccer.PPM);
         TextureRegion playerStand = new TextureRegion(getTexture(), 0, 0, 77, 107);
-        setBounds(0, 0, 77 * 1.6f / Soccer.PPM , 107 * 1.7f / Soccer.PPM);
+        setBounds(0, 0, 77 * 1.7f / Soccer.PPM , 107 * 1.7f / Soccer.PPM);
         setRegion(playerStand);
+
     }
 
     /**

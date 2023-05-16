@@ -38,6 +38,7 @@ public class Net extends Sprite {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.filter.categoryBits = Soccer.BIT_NET;
+        fixtureDef.filter.maskBits = Soccer.BIT_BALL;
 
         PolygonShape net = new PolygonShape();
         net.setAsBox(hX / Soccer.PPM, hY / Soccer.PPM);

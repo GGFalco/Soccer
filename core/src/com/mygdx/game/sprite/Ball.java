@@ -24,7 +24,7 @@ public class Ball extends Sprite {
 
         Texture soccerTexture = new Texture(Gdx.files.internal("sprites/ball.png"));
         TextureRegion soccerBall = new TextureRegion(soccerTexture);
-        setBounds(0, 0, 50 / Soccer.PPM, 50 / Soccer.PPM);
+        setBounds(0, 0, 55 / Soccer.PPM, 55 / Soccer.PPM);
         setRegion(soccerBall);
 
     }
@@ -43,7 +43,7 @@ public class Ball extends Sprite {
         fixtureDef.filter.categoryBits = Soccer.BIT_BALL;
 
         CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(20 / Soccer.PPM);
+        circleShape.setRadius(28 / Soccer.PPM);
 
 
         fixtureDef.shape = circleShape;
