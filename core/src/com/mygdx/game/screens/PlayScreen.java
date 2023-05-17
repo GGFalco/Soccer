@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Soccer;
 import com.mygdx.game.sprite.Ball;
@@ -19,6 +20,8 @@ import com.mygdx.game.sprite.Player;
 import com.mygdx.game.world.Ground;
 import com.mygdx.game.world.Net;
 import com.mygdx.game.world.Wall;
+
+import java.util.ArrayList;
 
 public class PlayScreen extends Stage implements Screen {
 
@@ -181,6 +184,13 @@ public class PlayScreen extends Stage implements Screen {
                         }
                     });
                 }
+
+                if(fA.getUserData() == "foot" && fB.getUserData() == "ball"){
+
+                    System.out.println("Kicked the ball");
+                    fB.getBody().applyLinearImpulse(new Vector2(10f, 8), fB.getBody().getWorldCenter(), true);
+                }
+
             }
 
             @Override
@@ -205,7 +215,6 @@ public class PlayScreen extends Stage implements Screen {
         //System.out.println(player.b2body.getPosition());
         if (Gdx.input.isKeyPressed(Input.Keys.UP) && player.b2body.getLinearVelocity().y <= 4f && player.b2body.getPosition().y <= 2.365f) {
 
-            //player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
             player.jump();
         }
 
@@ -220,7 +229,8 @@ public class PlayScreen extends Stage implements Screen {
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.SPACE)){
-            System.out.println("Kick");
+            Fixture footFixture = player.b2body.getFixtureList().get(1);
+            System.out.println(footFixture.getUserData());
             player.kick();
         }
     }

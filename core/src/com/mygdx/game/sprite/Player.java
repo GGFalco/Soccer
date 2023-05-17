@@ -43,7 +43,6 @@ public class Player extends Sprite {
 
         for (int i = 0; i < 7; i++) {
             frames.add(new TextureRegion(getTexture(), i * 77, 0, 77, 107));
-            System.out.println("added frame");
         }
         playerRun = new Animation<>(0.3f, frames);
 
@@ -140,8 +139,8 @@ public class Player extends Sprite {
         footFixture.shape = footShape;
         fixtureDef.shape = polygonShape;
 
-        b2body.createFixture(fixtureDef);
-        b2body.createFixture(footFixture);
+        b2body.createFixture(fixtureDef).setUserData("body");
+        b2body.createFixture(footFixture).setUserData("foot");
 
         footShape.dispose();
         polygonShape.dispose();
