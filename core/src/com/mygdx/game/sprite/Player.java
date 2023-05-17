@@ -134,7 +134,7 @@ public class Player extends Sprite {
         footFixture.filter.maskBits = Soccer.BIT_BALL;
 
         PolygonShape footShape = new PolygonShape();
-        footShape.setAsBox(10 / Soccer.PPM, 30 / Soccer.PPM, new Vector2(10 / Soccer.PPM, -(70 / Soccer.PPM)) , 0);
+        footShape.setAsBox(10 / Soccer.PPM, 20 / Soccer.PPM, new Vector2(12 / Soccer.PPM, -(50 / Soccer.PPM)) , 0);
 
         footFixture.shape = footShape;
         fixtureDef.shape = polygonShape;
