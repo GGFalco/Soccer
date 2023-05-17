@@ -31,11 +31,11 @@ public class Ball extends Sprite {
 
     public void defineBall(){
 
-        BodyDef bdef = new BodyDef();
-        bdef.position.set(x , y);
-        bdef.type = BodyDef.BodyType.DynamicBody;
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.position.set(x , y);
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
 
-        b2body = world.createBody(bdef);
+        b2body = world.createBody(bodyDef);
         b2body.setUserData("ball");
 
         FixtureDef fixtureDef = new FixtureDef();

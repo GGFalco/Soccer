@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Soccer;
 import com.mygdx.game.screens.PlayScreen;
-import com.sun.tools.javac.util.List;
 
 public class Player extends Sprite {
 
@@ -26,8 +25,9 @@ public class Player extends Sprite {
     public Body b2body;
     float x;
     float y;
+    boolean right;
 
-    public Player(World world, PlayScreen screen, float x, float y) {
+    public Player(World world, PlayScreen screen, float x, float y, boolean right) {
 
         super(screen.getAtlas().findRegion("char1-walk"));
 
@@ -38,19 +38,20 @@ public class Player extends Sprite {
         this.previousState = State.STANDING;
         this.stateTimer = 0;
         this.runningRight = true;
+        this.right = right;
 
         Array<TextureRegion> frames = new Array<>();
 
         for (int i = 0; i < 7; i++) {
-            frames.add(new TextureRegion(getTexture(), i * 77, 0, 77, 107));
+            frames.add(new TextureRegion(getTexture(), i * 83, 0, 83, 170));
         }
         playerRun = new Animation<>(0.3f, frames);
 
         definePlayer();
 
         // Standing player
-        playerStand = new TextureRegion(getTexture(), 0, 0, 77, 107);
-        setBounds(0, 0, 77 * 1.7f / Soccer.PPM, 107 * 1.7f / Soccer.PPM);
+        playerStand = new TextureRegion(getTexture(), 0, 0, 83, 170);
+        setBounds(0, 0, 83 * 1.7f / Soccer.PPM, 170 * 1.7f / Soccer.PPM);
         setRegion(playerStand);
     }
 
@@ -100,13 +101,12 @@ public class Player extends Sprite {
         }
     }
 
-    public void kick(){
-        
-    }
+
+
 
     public void jump() {
         if (currentState != State.JUMPING) {
-            b2body.applyLinearImpulse(new Vector2(0, 4f), b2body.getWorldCenter(), true);
+            b2body.applyLinearImpulse(new Vector2(0, 4.3f), b2body.getWorldCenter(), true);
             currentState = State.JUMPING;
         }
     }
@@ -123,8 +123,9 @@ public class Player extends Sprite {
         b2body = world.createBody(bodyDef);
         b2body.setUserData(this);
 
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.filter.categoryBits = Soccer.BIT_PLAYER;
+        FixtureDef bodyFixture = new FixtureDef();
+        bodyFixture.filter.categoryBits = Soccer.BIT_PLAYER;
+        bodyFixture.restitution = 0;
 
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.setAsBox(20 / Soccer.PPM, 70 / Soccer.PPM);
@@ -132,16 +133,34 @@ public class Player extends Sprite {
         FixtureDef footFixture = new FixtureDef();
         footFixture.filter.categoryBits = Soccer.BIT_FOOT;
         footFixture.filter.maskBits = Soccer.BIT_BALL;
+        footFixture.restitution = 0;
 
         PolygonShape footShape = new PolygonShape();
-        footShape.setAsBox(10 / Soccer.PPM, 20 / Soccer.PPM, new Vector2(12 / Soccer.PPM, -(50 / Soccer.PPM)) , 0);
+        if(right){
+            footShape.setAsBox(10 / Soccer.PPM, 18 / Soccer.PPM, new Vector2(-(12 / Soccer.PPM), -(50 / Soccer.PPM)),
+                    0);
+        } else {
+            footShape.setAsBox(10 / Soccer.PPM, 18 / Soccer.PPM, new Vector2(12 / Soccer.PPM, -(50 / Soccer.PPM)), 0);
+        }
+
+        FixtureDef headFixture = new FixtureDef();
+        headFixture.filter.categoryBits = Soccer.BIT_HEAD;
+        headFixture.filter.maskBits = Soccer.BIT_BALL;
+        headFixture.restitution = 0;
+
+        CircleShape headShape = new CircleShape();
+        headShape.setRadius(40 / Soccer.PPM);
+        headShape.setPosition(new Vector2(0, 50 / Soccer.PPM));
 
         footFixture.shape = footShape;
-        fixtureDef.shape = polygonShape;
+        bodyFixture.shape = polygonShape;
+        headFixture.shape = headShape;
 
-        b2body.createFixture(fixtureDef).setUserData("body");
+        b2body.createFixture(bodyFixture).setUserData("body");
         b2body.createFixture(footFixture).setUserData("foot");
+        b2body.createFixture(headFixture).setUserData("head");
 
+        headShape.dispose();
         footShape.dispose();
         polygonShape.dispose();
     }

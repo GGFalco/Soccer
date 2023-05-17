@@ -22,17 +22,21 @@ public class Soccer extends Game {
     public static final short BIT_NET = 4;
     public static final short BIT_PLAYER = 8;
     public static final short BIT_FOOT = 16;
+    public static final short BIT_HEAD = 32;
 
     public SpriteBatch batch;
     public BitmapFont bigFont;
     public BitmapFont mediumFont;
     public BitmapFont normalFont;
+    public BitmapFont arcadeFont;
 
     public TextButton.TextButtonStyle textButtonStyle;
 
     public Skin skin;
+    public Skin arcadeSkin;
 
     public final String stylesPath = "style/lgdxs-ui.json";
+    public final String arcadeStylePath = "style/arcade/arcade-ui.json";
 
     public java.util.List<String> spriteNames = new ArrayList<>();
     public final int spriteFrameCols = 7;
@@ -42,6 +46,10 @@ public class Soccer extends Game {
 
         this.batch = new SpriteBatch();
         this.skin = new Skin(Gdx.files.internal(stylesPath));
+        this.arcadeSkin = new Skin(Gdx.files.internal(arcadeStylePath));
+
+        arcadeFont = new BitmapFont(Gdx.files.internal("style/arcade/font-export.fnt"));
+        arcadeFont.getData().setScale(3f,3f);
 
         normalFont = new BitmapFont(Gdx.files.internal("fonts/font-export.fnt"));
         normalFont.getData().setScale(1f, 1f);
@@ -74,6 +82,8 @@ public class Soccer extends Game {
         mediumFont.dispose();
         bigFont.dispose();
         skin.dispose();
+        arcadeSkin.dispose();
+        arcadeFont.dispose();
     }
 
 }
