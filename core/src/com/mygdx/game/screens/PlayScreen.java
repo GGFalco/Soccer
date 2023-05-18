@@ -57,12 +57,13 @@ public class PlayScreen extends Stage implements Screen {
     Label rightScoreLabel;
 
     TypingLabel typingLabel;
-    Label.LabelStyle typingLabelStyle;
 
 
     static int leftGoal = 0;
     static int rightGoal = 0;
     static boolean pause = false;
+    static float deltaTime;
+    static boolean goal = false;
 
     public PlayScreen(final Soccer game) {
 
@@ -97,13 +98,13 @@ public class PlayScreen extends Stage implements Screen {
         labelStyle.font = game.arcadeFont;
 
         leftScoreLabel = new Label("0", labelStyle);
-        leftScoreLabel.setPosition((Soccer.SCREEN_WIDTH / 2) - 150, Soccer.SCREEN_HEIGHT - 100);
+        leftScoreLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) - 150, Soccer.SCREEN_HEIGHT - 100);
         rightScoreLabel = new Label("0", labelStyle);
-        rightScoreLabel.setPosition((Soccer.SCREEN_WIDTH / 2) + 150, Soccer.SCREEN_HEIGHT - 100);
+        rightScoreLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) + 150, Soccer.SCREEN_HEIGHT - 100);
 
         typingLabel = new TypingLabel("{COLOR=RED} GOAL", labelStyle);
-        typingLabel.setPosition(200 / Soccer.PPM, 300 / Soccer.PPM);
-        typingLabel.setFontScale(10f);
+        typingLabel.setPosition(200, 300);
+        typingLabel.debug();
 
 
         player = new Player(world, this, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, false);
@@ -156,10 +157,12 @@ public class PlayScreen extends Stage implements Screen {
 
         Gdx.gl.glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        deltaTime = delta;
 
         switch (state) {
             case RUN:
                 update(delta);
+
                 handleCollision();
                 handleLeftPlayerMovements();
                 handleRightPlayerMovements();
@@ -169,11 +172,10 @@ public class PlayScreen extends Stage implements Screen {
 
                 leftScoreLabel.draw(game.batch, 1);
                 rightScoreLabel.draw(game.batch, 1);
-                backgroundSprite.draw(game.batch, .1f);
+                backgroundSprite.draw(game.batch, 1f);
                 player.draw(game.batch, 1);
                 rightPlayer.draw(game.batch, 1);
                 ball.draw(game.batch, 1);
-                typingLabel.draw(game.batch, 1);
 
                 game.batch.end();
 
@@ -186,21 +188,23 @@ public class PlayScreen extends Stage implements Screen {
 
                 leftScoreLabel.draw(game.batch, 1);
                 rightScoreLabel.draw(game.batch, 1);
-                backgroundSprite.draw(game.batch, .1f);
+                backgroundSprite.draw(game.batch, 1f);
                 player.draw(game.batch, 1);
                 rightPlayer.draw(game.batch, 1);
                 ball.draw(game.batch, 1);
-                typingLabel.draw(game.batch, 1);
+
+
 
                 game.batch.end();
 
                 stage.draw();
                 break;
         }
-
-
         handleClickEvents();
     }
+
+
+
 
     public void handleClickEvents() {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
@@ -218,7 +222,6 @@ public class PlayScreen extends Stage implements Screen {
     }
 
     public void handleCollision() {
-
         world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
@@ -249,6 +252,8 @@ public class PlayScreen extends Stage implements Screen {
 
                     rightGoal++;
                     rightScoreLabel.setText(rightGoal);
+                    System.out.println("goal");
+                    goal = true;
                 }
                 /*
                 Left player goal
@@ -275,6 +280,8 @@ public class PlayScreen extends Stage implements Screen {
 
                     leftGoal++;
                     leftScoreLabel.setText(leftGoal);
+                    goal = true;
+
                 }
                 /*
                 Kick shot
