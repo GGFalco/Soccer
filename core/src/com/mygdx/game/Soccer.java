@@ -39,6 +39,7 @@ public class Soccer extends Game {
     public final String arcadeStylePath = "style/arcade/arcade-ui.json";
 
     public java.util.List<String> spriteNames = new ArrayList<>();
+    public java.util.List<String> spriteAtlas = new ArrayList<>();
     public final int spriteFrameCols = 7;
 
     @Override
@@ -64,8 +65,12 @@ public class Soccer extends Game {
         textButtonStyle.font = this.bigFont;
 
         spriteNames.add("red");
-        spriteNames.add("purple");
-        spriteNames.add("white");
+        spriteNames.add("mario");
+        spriteNames.add("luigi");
+        spriteAtlas.add("char1-walk");
+        spriteAtlas.add("char2-walk");
+        spriteAtlas.add("char3-walk");
+
 
         this.setScreen(new WelcomeScreen(this));
     }
