@@ -123,6 +123,7 @@ public class Player extends Sprite {
 
         FixtureDef bodyFixture = new FixtureDef();
         bodyFixture.filter.categoryBits = Soccer.BIT_PLAYER;
+        bodyFixture.filter.maskBits = Soccer.BIT_GROUND | Soccer.BIT_WALL | Soccer.BIT_PLAYER | Soccer.BIT_BALL;
         bodyFixture.restitution = 0;
 
         PolygonShape polygonShape = new PolygonShape();
@@ -130,24 +131,27 @@ public class Player extends Sprite {
 
         FixtureDef footFixture = new FixtureDef();
         footFixture.filter.categoryBits = Soccer.BIT_FOOT;
-        footFixture.filter.maskBits = Soccer.BIT_BALL;
-        footFixture.restitution = 0;
+        footFixture.filter.maskBits = Soccer.BIT_BALL | Soccer.BIT_FOOT | Soccer.BIT_PLAYER;
+        footFixture.restitution = 0 ;
+
 
         PolygonShape footShape = new PolygonShape();
         if (right) {
-            footShape.setAsBox(10 / Soccer.PPM, 18 / Soccer.PPM, new Vector2(-(12 / Soccer.PPM), -(50 / Soccer.PPM)), 0);
+            footShape.setAsBox(10 / Soccer.PPM, 33 / Soccer.PPM, new Vector2(-(13 / Soccer.PPM), -(37 / Soccer.PPM)),
+                    0);
         } else {
-            footShape.setAsBox(10 / Soccer.PPM, 18 / Soccer.PPM, new Vector2(12 / Soccer.PPM, -(50 / Soccer.PPM)), 0);
+            footShape.setAsBox(10 / Soccer.PPM, 33 / Soccer.PPM, new Vector2(13 / Soccer.PPM, -(37 / Soccer.PPM)), 0);
         }
+
 
         FixtureDef headFixture = new FixtureDef();
         headFixture.filter.categoryBits = Soccer.BIT_HEAD;
-        headFixture.filter.maskBits = Soccer.BIT_BALL;
+        headFixture.filter.maskBits = Soccer.BIT_BALL | Soccer.BIT_PLAYER | Soccer.BIT_HEAD;
         headFixture.restitution = 0;
 
         CircleShape headShape = new CircleShape();
-        headShape.setRadius(40 / Soccer.PPM);
-        headShape.setPosition(new Vector2(0, 50 / Soccer.PPM));
+        headShape.setRadius(43 / Soccer.PPM);
+        headShape.setPosition(new Vector2(0, 37 / Soccer.PPM));
 
         footFixture.shape = footShape;
         bodyFixture.shape = polygonShape;
