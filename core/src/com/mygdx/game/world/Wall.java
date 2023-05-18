@@ -31,6 +31,8 @@ public class Wall extends Sprite {
         b2body.setUserData(this);
 
         FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.filter.categoryBits = Soccer.BIT_WALL;
+        fixtureDef.filter.maskBits = Soccer.BIT_BALL |  Soccer.BIT_PLAYER;
 
         PolygonShape ground = new PolygonShape();
         ground.setAsBox(28 / Soccer.PPM, Gdx.graphics.getHeight() / Soccer.PPM);
