@@ -47,8 +47,6 @@ public class SelectionScreen implements Screen {
     TextButton leftArrowR;
     TextButton playButton;
 
-
-
     static int index = 0;
     static int index2 = 0;
 
@@ -73,7 +71,7 @@ public class SelectionScreen implements Screen {
          * Left character animation
          */
         charSheet = new Texture(Gdx.files.internal("sprites/sprites.png"));
-        tmp = TextureRegion.split(charSheet, (int) (charSheet.getWidth() / (game.spriteFrameCols * 3.005f)), charSheet.getHeight());
+        tmp = TextureRegion.split(charSheet, charSheet.getWidth() / 21, charSheet.getHeight());
         spriteImage = new Image();
         spriteImage.setPosition(300, Gdx.graphics.getHeight() - 650);
         spriteImage.setScale(3);
@@ -84,7 +82,7 @@ public class SelectionScreen implements Screen {
          * Right character animation
          */
         charSheet2 = new Texture(Gdx.files.internal("sprites/sprites.png"));
-        tmp = TextureRegion.split(charSheet2, (int) (charSheet2.getWidth() / (game.spriteFrameCols * 3.005f)), charSheet2.getHeight());
+        tmp = TextureRegion.split(charSheet2, charSheet2.getWidth() / 21, charSheet2.getHeight());
         spriteImage2 = new Image();
         spriteImage2.setPosition(Gdx.graphics.getWidth() - 550, Gdx.graphics.getHeight() - 650);
         spriteImage2.setScale(3);
@@ -118,9 +116,8 @@ public class SelectionScreen implements Screen {
         arrowStyle = skin.get("oval2", TextButton.TextButtonStyle.class);
         arrowStyle.font = game.bigFont;
 
-
         playButton = new TextButton("PLAY", game.textButtonStyle);
-        playButton.setPosition((float) Gdx.graphics.getWidth() * .97f/2 , (float) Gdx.graphics.getHeight() - 660);
+        playButton.setPosition((float) Gdx.graphics.getWidth() * .97f / 2, (float) Gdx.graphics.getHeight() - 660);
 
         rightArrowL = new TextButton(">", arrowStyle);
         rightArrowL.setPosition(500, Gdx.graphics.getHeight() - 660);
@@ -144,7 +141,7 @@ public class SelectionScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 
-                game.setScreen(new PlayScreen(game));
+                game.setScreen(new PlayScreen(game, game.spriteAtlas.get(index), game.spriteAtlas.get(index2)));
             }
         });
 
