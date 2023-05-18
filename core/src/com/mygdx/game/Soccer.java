@@ -23,12 +23,16 @@ public class Soccer extends Game {
     public static final short BIT_PLAYER = 8;
     public static final short BIT_FOOT = 16;
     public static final short BIT_HEAD = 32;
+    public static final short BIT_GROUND = 64;
+    public static final short BIT_WALL = 128;
+
 
     public SpriteBatch batch;
     public BitmapFont bigFont;
     public BitmapFont mediumFont;
     public BitmapFont normalFont;
     public BitmapFont arcadeFont;
+    public BitmapFont littleArcadeFont;
 
     public TextButton.TextButtonStyle textButtonStyle;
 
@@ -51,6 +55,10 @@ public class Soccer extends Game {
 
         arcadeFont = new BitmapFont(Gdx.files.internal("style/arcade/font-export.fnt"));
         arcadeFont.getData().setScale(3f,3f);
+
+        littleArcadeFont = new BitmapFont(Gdx.files.internal("style/arcade/font-export.fnt"));
+        littleArcadeFont.getData().setScale(1.8f, 1.8f);
+
 
         normalFont = new BitmapFont(Gdx.files.internal("fonts/font-export.fnt"));
         normalFont.getData().setScale(1f, 1f);
