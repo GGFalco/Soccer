@@ -252,7 +252,6 @@ public class PlayScreen extends Stage implements Screen {
 
                     rightGoal++;
                     rightScoreLabel.setText(rightGoal);
-                    System.out.println("goal");
                     goal = true;
                 }
                 /*
