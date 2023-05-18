@@ -20,6 +20,8 @@ import com.mygdx.game.world.Net;
 import com.mygdx.game.world.Wall;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
+
+
 public class PlayScreen extends Stage implements Screen {
 
     final Soccer game;
@@ -31,6 +33,14 @@ public class PlayScreen extends Stage implements Screen {
     Stage stage;
     OrthographicCamera camera;
     Skin skin;
+
+
+    boolean timeExpired = false;
+    private float timeSeconds = 0f;
+    float period = 1f;
+    private int minutes = 1;
+    private int seconds = 0;
+
 
     Texture backgroundScreen;
     Sprite backgroundSprite;
@@ -54,6 +64,8 @@ public class PlayScreen extends Stage implements Screen {
     Label.LabelStyle labelStyle;
     Label leftScoreLabel;
     Label rightScoreLabel;
+    Label minuteLabel;
+    Label secondsLabel;
 
     TypingLabel typingLabel;
     String atlasLeftPlayer;
@@ -61,8 +73,8 @@ public class PlayScreen extends Stage implements Screen {
 
     static int leftGoal = 0;
     static int rightGoal = 0;
-    static boolean pause = false;
-    static boolean goal = false;
+    static boolean pause;
+    static boolean goal;
 
     public PlayScreen(final Soccer game, String atlasLeftPlayer, String atlasRightPlayer) {
 
@@ -74,8 +86,11 @@ public class PlayScreen extends Stage implements Screen {
         this.camera = new OrthographicCamera(Soccer.V_WIDTH, Soccer.V_HEIGHT);
         this.atlasLeftPlayer = atlasLeftPlayer;
         this.atlasRightPlayer = atlasRightPlayer;
+        pause = false;
+        goal = false;
         camera.setToOrtho(false, Soccer.V_WIDTH, Soccer.V_HEIGHT);
         Gdx.input.setInputProcessor(this);
+
 
         environmentConfiguration();
 
@@ -96,12 +111,21 @@ public class PlayScreen extends Stage implements Screen {
         labelStyle.font = game.arcadeFont;
 
         leftScoreLabel = new Label("0", labelStyle);
-        leftScoreLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) - 150, Soccer.SCREEN_HEIGHT - 100);
+        leftScoreLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) - 150, Soccer.SCREEN_HEIGHT - 150);
         rightScoreLabel = new Label("0", labelStyle);
-        rightScoreLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) + 150, Soccer.SCREEN_HEIGHT - 100);
+        rightScoreLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) + 150, Soccer.SCREEN_HEIGHT - 150);
 
+        labelStyle.font = game.littleArcadeFont;
+        minuteLabel = new Label(String.format("%02d:", minutes), labelStyle);
+        minuteLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) - 40, Soccer.SCREEN_HEIGHT - 150);
+        minuteLabel.setColor(Color.SKY);
+        secondsLabel = new Label(String.format("%02d", seconds), labelStyle);
+        secondsLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) + 40, Soccer.SCREEN_HEIGHT - 150);
+        secondsLabel.setColor(Color.SKY);
+
+        labelStyle.font = game.arcadeFont;
         typingLabel = new TypingLabel("", labelStyle);
-        typingLabel.setScale(2f, 2f);
+        typingLabel.setScale(3f, 3f);
         typingLabel.setPosition((Soccer.SCREEN_WIDTH / 2) - 200, (Soccer.SCREEN_HEIGHT / 2));
         typingLabel.debug();
 
@@ -125,6 +149,8 @@ public class PlayScreen extends Stage implements Screen {
 
         stage.addActor(leftScoreLabel);
         stage.addActor(rightScoreLabel);
+        stage.addActor(minuteLabel);
+        stage.addActor(secondsLabel);
         stage.addActor(typingLabel);
     }
 
@@ -162,17 +188,24 @@ public class PlayScreen extends Stage implements Screen {
                 handleCollision();
                 handleLeftPlayerMovements();
                 handleRightPlayerMovements();
+                handleTimer();
 
                 game.batch.setProjectionMatrix(camera.combined);
                 game.batch.begin();
 
                 leftScoreLabel.draw(game.batch, 1);
                 rightScoreLabel.draw(game.batch, 1);
-                backgroundSprite.draw(game.batch, 1f);
+                backgroundSprite.draw(game.batch, .1f);
                 player.draw(game.batch, 1);
                 rightPlayer.draw(game.batch, 1);
                 ball.draw(game.batch, 1);
+                typingLabel.act(delta);
 
+                if (goal) {
+                    typingLabel.setText("{SICK}GOAL");
+
+                    goal = false;
+                }
 
                 game.batch.end();
                 stage.draw();
@@ -189,6 +222,7 @@ public class PlayScreen extends Stage implements Screen {
                 player.draw(game.batch, 1);
                 rightPlayer.draw(game.batch, 1);
                 ball.draw(game.batch, 1);
+                System.out.println("in pausa");
 
                 game.batch.end();
 
@@ -197,6 +231,33 @@ public class PlayScreen extends Stage implements Screen {
         }
 
         handleClickEvents();
+    }
+
+    public void handleTimer(){
+
+        if(!timeExpired && !pause) {
+            timeSeconds += Gdx.graphics.getDeltaTime();
+            if (timeSeconds > period) {
+                timeSeconds -= period;
+                seconds--;
+
+
+                if (seconds <= 0) {
+                    if(minutes > 0) {
+                        seconds = 59;
+                        minutes--;
+                    }
+                }
+                secondsLabel.setText(String.format("%02d", seconds));
+                minuteLabel.setText(String.format("%02d: ", minutes));
+
+                if (minutes == 0 && seconds <= 0) {
+                    timeExpired = true;
+                    pause = true;
+                    game.setScreen(new SelectionScreen(game));
+                }
+            }
+        }
     }
 
     public void handleClickEvents() {
@@ -282,6 +343,8 @@ public class PlayScreen extends Stage implements Screen {
 
                 if (fA.getUserData() == "foot" && fB.getUserData() == "ball") {
 
+                    fA.getBody().getFixtureList().first().setRestitution(0);
+
                     if (fA.getBody().getLinearVelocity().x >= 0) {
 
                         if (fA.getBody().getLinearVelocity().x >= 3.4f) {
@@ -305,25 +368,25 @@ public class PlayScreen extends Stage implements Screen {
                  */
                 if (fA.getUserData() == "head" && fB.getUserData() == "ball") {
 
+                    fA.getBody().getFixtureList().first().setRestitution(0);
+
                     if (fA.getBody().getLinearVelocity().x > 0) {
 
                         if (fA.getBody().getLinearVelocity().y > 0) {
                             System.out.println("colpo potente");
-                            fB.getBody().applyLinearImpulse(new Vector2(12f, 1f), fB.getBody().getWorldCenter(), true);
+                            fB.getBody().applyLinearImpulse(new Vector2(12f, 8f), fB.getBody().getWorldCenter(), true);
                         } else {
-                            fB.getBody().applyLinearImpulse(new Vector2(6f, 2f), fB.getBody().getWorldCenter(), true);
+                            fB.getBody().applyLinearImpulse(new Vector2(6f, 8f), fB.getBody().getWorldCenter(), true);
                         }
                     } else {
 
                         if (fA.getBody().getLinearVelocity().y > 0) {
                             System.out.println("in volo");
-                            fB.getBody().applyLinearImpulse(new Vector2(-12f, 1f), fB.getBody().getWorldCenter(), true);
+                            fB.getBody().applyLinearImpulse(new Vector2(-12f, 8f), fB.getBody().getWorldCenter(), true);
                         } else {
-                            fB.getBody().applyLinearImpulse(new Vector2(-6f, 2f), fB.getBody().getWorldCenter(), true);
+                            fB.getBody().applyLinearImpulse(new Vector2(-6f, 8f), fB.getBody().getWorldCenter(), true);
                         }
                     }
-
-                    ball.rotate(360f);
                 }
             }
 
