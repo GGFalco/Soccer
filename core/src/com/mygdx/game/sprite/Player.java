@@ -2,6 +2,7 @@ package com.mygdx.game.sprite;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -27,9 +28,9 @@ public class Player extends Sprite {
     float y;
     boolean right;
 
-    public Player(World world, PlayScreen screen, float x, float y, boolean right) {
+    public Player(TextureAtlas atlas, World world, PlayScreen screen, float x, float y, boolean right, String region) {
 
-        super(screen.getAtlas().findRegion("char1-walk"));
+        super(atlas.findRegion(region));
 
         this.world = world;
         this.x = x;
@@ -101,9 +102,6 @@ public class Player extends Sprite {
         }
     }
 
-
-
-
     public void jump() {
         if (currentState != State.JUMPING) {
             b2body.applyLinearImpulse(new Vector2(0, 4.3f), b2body.getWorldCenter(), true);
@@ -136,9 +134,8 @@ public class Player extends Sprite {
         footFixture.restitution = 0;
 
         PolygonShape footShape = new PolygonShape();
-        if(right){
-            footShape.setAsBox(10 / Soccer.PPM, 18 / Soccer.PPM, new Vector2(-(12 / Soccer.PPM), -(50 / Soccer.PPM)),
-                    0);
+        if (right) {
+            footShape.setAsBox(10 / Soccer.PPM, 18 / Soccer.PPM, new Vector2(-(12 / Soccer.PPM), -(50 / Soccer.PPM)), 0);
         } else {
             footShape.setAsBox(10 / Soccer.PPM, 18 / Soccer.PPM, new Vector2(12 / Soccer.PPM, -(50 / Soccer.PPM)), 0);
         }
