@@ -26,7 +26,6 @@ public class PlayScreen extends Stage implements Screen {
 
     public enum State {PAUSE, RUN}
 
-
     public static State state = State.RUN;
 
     Stage stage;
@@ -57,24 +56,24 @@ public class PlayScreen extends Stage implements Screen {
     Label rightScoreLabel;
 
     TypingLabel typingLabel;
-
+    String atlasLeftPlayer;
+    String atlasRightPlayer;
 
     static int leftGoal = 0;
     static int rightGoal = 0;
     static boolean pause = false;
-    static float deltaTime;
     static boolean goal = false;
 
-    public PlayScreen(final Soccer game) {
+    public PlayScreen(final Soccer game, String atlasLeftPlayer, String atlasRightPlayer) {
 
         super(new ScreenViewport(new OrthographicCamera(1920, 1080)));
-        String atl = "char1-walk.atlas";
-        atlas = new TextureAtlas(atl);
 
         this.game = game;
         this.skin = game.skin;
         this.stage = new Stage();
         this.camera = new OrthographicCamera(Soccer.V_WIDTH, Soccer.V_HEIGHT);
+        this.atlasLeftPlayer = atlasLeftPlayer;
+        this.atlasRightPlayer = atlasRightPlayer;
         camera.setToOrtho(false, Soccer.V_WIDTH, Soccer.V_HEIGHT);
         Gdx.input.setInputProcessor(this);
 
@@ -93,7 +92,6 @@ public class PlayScreen extends Stage implements Screen {
         world = new World(new Vector2(0, -10), true);
         b2dr = new Box2DDebugRenderer();
 
-
         labelStyle = game.arcadeSkin.get("default", Label.LabelStyle.class);
         labelStyle.font = game.arcadeFont;
 
@@ -102,13 +100,15 @@ public class PlayScreen extends Stage implements Screen {
         rightScoreLabel = new Label("0", labelStyle);
         rightScoreLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) + 150, Soccer.SCREEN_HEIGHT - 100);
 
-        typingLabel = new TypingLabel("{COLOR=RED} GOAL", labelStyle);
-        typingLabel.setPosition(200, 300);
+        typingLabel = new TypingLabel("", labelStyle);
+        typingLabel.setScale(2f, 2f);
+        typingLabel.setPosition((Soccer.SCREEN_WIDTH / 2) - 200, (Soccer.SCREEN_HEIGHT / 2));
         typingLabel.debug();
 
-
-        player = new Player(world, this, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, false);
-        rightPlayer = new Player(world, this, (Soccer.SCREEN_WIDTH - 200) / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, true);
+        atlas = new TextureAtlas(atlasLeftPlayer + ".atlas");
+        player = new Player(atlas, world, this, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, false, atlasLeftPlayer);
+        atlas = new TextureAtlas(atlasRightPlayer + ".atlas");
+        rightPlayer = new Player(atlas, world, this, (Soccer.SCREEN_WIDTH - 200) / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, true, atlasRightPlayer);
         ball = new Ball(world, Soccer.V_WIDTH / 2, Soccer.V_HEIGHT / 2);
 
         ground = new Ground(world, 0, (Soccer.V_HEIGHT / 8) + (20 / Soccer.PPM), 1920, 10);
@@ -126,10 +126,6 @@ public class PlayScreen extends Stage implements Screen {
         stage.addActor(leftScoreLabel);
         stage.addActor(rightScoreLabel);
         stage.addActor(typingLabel);
-    }
-
-    public TextureAtlas getAtlas() {
-        return atlas;
     }
 
     @Override
@@ -157,10 +153,10 @@ public class PlayScreen extends Stage implements Screen {
 
         Gdx.gl.glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        deltaTime = delta;
 
         switch (state) {
             case RUN:
+
                 update(delta);
 
                 handleCollision();
@@ -177,10 +173,11 @@ public class PlayScreen extends Stage implements Screen {
                 rightPlayer.draw(game.batch, 1);
                 ball.draw(game.batch, 1);
 
-                game.batch.end();
 
+                game.batch.end();
                 stage.draw();
                 break;
+
             case PAUSE:
 
                 game.batch.setProjectionMatrix(camera.combined);
@@ -193,18 +190,14 @@ public class PlayScreen extends Stage implements Screen {
                 rightPlayer.draw(game.batch, 1);
                 ball.draw(game.batch, 1);
 
-
-
                 game.batch.end();
 
                 stage.draw();
                 break;
         }
+
         handleClickEvents();
     }
-
-
-
 
     public void handleClickEvents() {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
@@ -212,11 +205,9 @@ public class PlayScreen extends Stage implements Screen {
             if (!pause) {
                 state = State.PAUSE;
                 pause = true;
-
             } else {
                 state = State.RUN;
                 pause = false;
-
             }
         }
     }
@@ -245,8 +236,10 @@ public class PlayScreen extends Stage implements Screen {
                             world.destroyBody(toRemoveRight);
 
                             ball = new Ball(world, Soccer.V_WIDTH / 2, Soccer.V_HEIGHT / 2);
-                            player = new Player(world, PlayScreen.this, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, false);
-                            rightPlayer = new Player(world, PlayScreen.this, (Soccer.SCREEN_WIDTH - 200) / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, true);
+                            atlas = new TextureAtlas(atlasLeftPlayer + ".atlas");
+                            player = new Player(atlas, world, PlayScreen.this, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, false, atlasLeftPlayer);
+                            atlas = new TextureAtlas(atlasRightPlayer + ".atlas");
+                            rightPlayer = new Player(atlas, world, PlayScreen.this, (Soccer.SCREEN_WIDTH - 200) / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, true, atlasRightPlayer);
                         }
                     });
 
@@ -272,15 +265,16 @@ public class PlayScreen extends Stage implements Screen {
                             world.destroyBody(toRemoveRight);
 
                             ball = new Ball(world, Soccer.V_WIDTH / 2, Soccer.V_HEIGHT / 2);
-                            player = new Player(world, PlayScreen.this, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, false);
-                            rightPlayer = new Player(world, PlayScreen.this, (Soccer.SCREEN_WIDTH - 200) / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, true);
+                            atlas = new TextureAtlas(atlasLeftPlayer + ".atlas");
+                            player = new Player(atlas, world, PlayScreen.this, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, false, atlasLeftPlayer);
+                            atlas = new TextureAtlas(atlasRightPlayer + ".atlas");
+                            rightPlayer = new Player(atlas, world, PlayScreen.this, (Soccer.SCREEN_WIDTH - 200) / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, true, atlasRightPlayer);
                         }
                     });
 
                     leftGoal++;
                     leftScoreLabel.setText(leftGoal);
                     goal = true;
-
                 }
                 /*
                 Kick shot
