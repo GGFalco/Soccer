@@ -70,7 +70,7 @@ public class SelectionScreen implements Screen {
         /*
          * Left character animation
          */
-        charSheet = new Texture(Gdx.files.internal("sprites/sprites.png"));
+        charSheet = new Texture(Gdx.files.internal("sprites/sprites2.png"));
         tmp = TextureRegion.split(charSheet, charSheet.getWidth() / 21, charSheet.getHeight());
         spriteImage = new Image();
         spriteImage.setPosition(300, Gdx.graphics.getHeight() - 650);
@@ -81,7 +81,7 @@ public class SelectionScreen implements Screen {
         /*
          * Right character animation
          */
-        charSheet2 = new Texture(Gdx.files.internal("sprites/sprites.png"));
+        charSheet2 = new Texture(Gdx.files.internal("sprites/sprites2.png"));
         tmp = TextureRegion.split(charSheet2, charSheet2.getWidth() / 21, charSheet2.getHeight());
         spriteImage2 = new Image();
         spriteImage2.setPosition(Gdx.graphics.getWidth() - 550, Gdx.graphics.getHeight() - 650);
