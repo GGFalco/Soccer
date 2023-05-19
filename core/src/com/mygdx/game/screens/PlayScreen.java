@@ -20,11 +20,10 @@ import com.mygdx.game.world.Net;
 import com.mygdx.game.world.Wall;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
-
-
 public class PlayScreen extends Stage implements Screen {
 
     final Soccer game;
+    final Soccer previousGame;
 
     public enum State {PAUSE, RUN}
 
@@ -34,13 +33,14 @@ public class PlayScreen extends Stage implements Screen {
     OrthographicCamera camera;
     Skin skin;
 
-
     boolean timeExpired = false;
     private float timeSeconds = 0f;
     float period = 1f;
     private int minutes = 1;
     private int seconds = 0;
 
+    private float goalTimeSeconds = 0f;
+    private int goalTimer = 5;
 
     Texture backgroundScreen;
     Sprite backgroundSprite;
@@ -81,6 +81,7 @@ public class PlayScreen extends Stage implements Screen {
         super(new ScreenViewport(new OrthographicCamera(1920, 1080)));
 
         this.game = game;
+        this.previousGame = game;
         this.skin = game.skin;
         this.stage = new Stage();
         this.camera = new OrthographicCamera(Soccer.V_WIDTH, Soccer.V_HEIGHT);
@@ -90,7 +91,6 @@ public class PlayScreen extends Stage implements Screen {
         goal = false;
         camera.setToOrtho(false, Soccer.V_WIDTH, Soccer.V_HEIGHT);
         Gdx.input.setInputProcessor(this);
-
 
         environmentConfiguration();
 
@@ -125,9 +125,8 @@ public class PlayScreen extends Stage implements Screen {
 
         labelStyle.font = game.arcadeFont;
         typingLabel = new TypingLabel("", labelStyle);
-        typingLabel.setScale(3f, 3f);
-        typingLabel.setPosition((Soccer.SCREEN_WIDTH / 2) - 200, (Soccer.SCREEN_HEIGHT / 2));
-        typingLabel.debug();
+        typingLabel.setFontScale(2f, 2f);
+        typingLabel.setPosition((Soccer.SCREEN_WIDTH / 2) - 175, (Soccer.SCREEN_HEIGHT / 2) + 175);
 
         atlas = new TextureAtlas(atlasLeftPlayer + ".atlas");
         player = new Player(atlas, world, this, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, false, atlasLeftPlayer);
@@ -195,17 +194,12 @@ public class PlayScreen extends Stage implements Screen {
 
                 leftScoreLabel.draw(game.batch, 1);
                 rightScoreLabel.draw(game.batch, 1);
-                backgroundSprite.draw(game.batch, .1f);
+                backgroundSprite.draw(game.batch, 1f);
                 player.draw(game.batch, 1);
                 rightPlayer.draw(game.batch, 1);
                 ball.draw(game.batch, 1);
                 typingLabel.act(delta);
-
-                if (goal) {
-                    typingLabel.setText("{SICK}GOAL");
-
-                    goal = false;
-                }
+                handleGoalEvent();
 
                 game.batch.end();
                 stage.draw();
@@ -233,17 +227,39 @@ public class PlayScreen extends Stage implements Screen {
         handleClickEvents();
     }
 
-    public void handleTimer(){
+    public void handleGoalEvent() {
 
-        if(!timeExpired && !pause) {
+
+
+        if (goal) {
+
+            goalTimeSeconds += Gdx.graphics.getDeltaTime();
+
+            if (goalTimeSeconds > period) {
+
+                goalTimeSeconds -= period;
+                goalTimer--;
+                System.out.println(goalTimer);
+
+                if (goalTimer == 0) {
+
+                    typingLabel.setText("");
+                    goal = false;
+                }
+            }
+        }
+    }
+
+    public void handleTimer() {
+
+        if (!timeExpired && !pause) {
             timeSeconds += Gdx.graphics.getDeltaTime();
             if (timeSeconds > period) {
                 timeSeconds -= period;
                 seconds--;
 
-
                 if (seconds <= 0) {
-                    if(minutes > 0) {
+                    if (minutes > 0) {
                         seconds = 59;
                         minutes--;
                     }
@@ -253,8 +269,9 @@ public class PlayScreen extends Stage implements Screen {
 
                 if (minutes == 0 && seconds <= 0) {
                     timeExpired = true;
-                    pause = true;
-                    game.setScreen(new SelectionScreen(game));
+                    //pause = true;
+                    endSession();
+
                 }
             }
         }
@@ -306,6 +323,7 @@ public class PlayScreen extends Stage implements Screen {
 
                     rightGoal++;
                     rightScoreLabel.setText(rightGoal);
+                    typingLabel.setText("{SICK}G   O   A   L");
                     goal = true;
                 }
                 /*
@@ -335,6 +353,7 @@ public class PlayScreen extends Stage implements Screen {
 
                     leftGoal++;
                     leftScoreLabel.setText(leftGoal);
+                    typingLabel.setText("{SICK}G   O   A   L");
                     goal = true;
                 }
                 /*
@@ -442,6 +461,10 @@ public class PlayScreen extends Stage implements Screen {
             Fixture footFixture = player.b2body.getFixtureList().get(1);
             System.out.println(footFixture.getUserData());
         }
+    }
+
+    public void endSession(){
+        game.setScreen(new SelectionScreen(previousGame));
     }
 
     @Override
