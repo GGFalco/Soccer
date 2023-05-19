@@ -97,6 +97,7 @@ public class Soccer extends Game {
         skin.dispose();
         arcadeSkin.dispose();
         arcadeFont.dispose();
+        littleArcadeFont.dispose();
     }
 
 }
