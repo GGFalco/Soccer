@@ -23,7 +23,6 @@ import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 public class PlayScreen extends Stage implements Screen {
 
     final Soccer game;
-    final Soccer previousGame;
 
     public enum State {PAUSE, RUN}
 
@@ -40,7 +39,7 @@ public class PlayScreen extends Stage implements Screen {
     private int seconds = 0;
 
     private float goalTimeSeconds = 0f;
-    private int goalTimer = 5;
+    private int goalTimer = 4;
 
     Texture backgroundScreen;
     Sprite backgroundSprite;
@@ -81,7 +80,6 @@ public class PlayScreen extends Stage implements Screen {
         super(new ScreenViewport(new OrthographicCamera(1920, 1080)));
 
         this.game = game;
-        this.previousGame = game;
         this.skin = game.skin;
         this.stage = new Stage();
         this.camera = new OrthographicCamera(Soccer.V_WIDTH, Soccer.V_HEIGHT);
@@ -464,7 +462,7 @@ public class PlayScreen extends Stage implements Screen {
     }
 
     public void endSession(){
-        game.setScreen(new SelectionScreen(previousGame));
+        game.setScreen(new WelcomeScreen(game));
     }
 
     @Override
