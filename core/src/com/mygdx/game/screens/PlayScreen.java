@@ -360,7 +360,7 @@ public class PlayScreen extends Stage implements Screen {
 
                 if (fA.getUserData() == "foot" && fB.getUserData() == "ball") {
 
-                    fA.getBody().getFixtureList().first().setRestitution(0);
+
 
                     if (fA.getBody().getLinearVelocity().x >= 0) {
 
@@ -385,7 +385,7 @@ public class PlayScreen extends Stage implements Screen {
                  */
                 if (fA.getUserData() == "head" && fB.getUserData() == "ball") {
 
-                    fA.getBody().getFixtureList().first().setRestitution(0);
+
 
                     if (fA.getBody().getLinearVelocity().x > 0) {
 
@@ -409,6 +409,7 @@ public class PlayScreen extends Stage implements Screen {
 
             @Override
             public void endContact(Contact contact) {
+
             }
 
             @Override
