@@ -124,7 +124,6 @@ public class Player extends Sprite {
         FixtureDef bodyFixture = new FixtureDef();
         bodyFixture.filter.categoryBits = Soccer.BIT_PLAYER;
         bodyFixture.filter.maskBits = Soccer.BIT_GROUND | Soccer.BIT_WALL | Soccer.BIT_PLAYER | Soccer.BIT_BALL;
-        bodyFixture.restitution = 0;
 
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.setAsBox(20 / Soccer.PPM, 70 / Soccer.PPM);
@@ -132,7 +131,6 @@ public class Player extends Sprite {
         FixtureDef footFixture = new FixtureDef();
         footFixture.filter.categoryBits = Soccer.BIT_FOOT;
         footFixture.filter.maskBits = Soccer.BIT_BALL | Soccer.BIT_FOOT | Soccer.BIT_PLAYER;
-        footFixture.restitution = 0 ;
 
 
         PolygonShape footShape = new PolygonShape();
@@ -147,7 +145,6 @@ public class Player extends Sprite {
         FixtureDef headFixture = new FixtureDef();
         headFixture.filter.categoryBits = Soccer.BIT_HEAD;
         headFixture.filter.maskBits = Soccer.BIT_BALL | Soccer.BIT_PLAYER | Soccer.BIT_HEAD;
-        headFixture.restitution = 0;
 
         CircleShape headShape = new CircleShape();
         headShape.setRadius(43 / Soccer.PPM);

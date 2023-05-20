@@ -227,8 +227,6 @@ public class PlayScreen extends Stage implements Screen {
 
     public void handleGoalEvent() {
 
-
-
         if (goal) {
 
             goalTimeSeconds += Gdx.graphics.getDeltaTime();
@@ -242,7 +240,9 @@ public class PlayScreen extends Stage implements Screen {
                 if (goalTimer == 0) {
 
                     typingLabel.setText("");
+                    goalTimer = 4;
                     goal = false;
+
                 }
             }
         }
@@ -269,7 +269,6 @@ public class PlayScreen extends Stage implements Screen {
                     timeExpired = true;
                     //pause = true;
                     endSession();
-
                 }
             }
         }
@@ -360,8 +359,6 @@ public class PlayScreen extends Stage implements Screen {
 
                 if (fA.getUserData() == "foot" && fB.getUserData() == "ball") {
 
-
-
                     if (fA.getBody().getLinearVelocity().x >= 0) {
 
                         if (fA.getBody().getLinearVelocity().x >= 3.4f) {
@@ -369,6 +366,8 @@ public class PlayScreen extends Stage implements Screen {
                         } else {
                             fB.getBody().applyLinearImpulse(new Vector2(3f, 12f), fB.getBody().getWorldCenter(), true);
                         }
+
+                        fA.getBody().setLinearVelocity(new Vector2(0, 0));
                     } else {
 
                         if (fA.getBody().getLinearVelocity().x <= -3.4f) {
@@ -376,16 +375,14 @@ public class PlayScreen extends Stage implements Screen {
                         } else {
                             fB.getBody().applyLinearImpulse(new Vector2(-3f, 12f), fB.getBody().getWorldCenter(), true);
                         }
-                    }
 
-                    ball.rotate(360f);
+                        fA.getBody().setLinearVelocity(new Vector2(0, 0));
+                    }
                 }
                 /*
                 Headshot
                  */
                 if (fA.getUserData() == "head" && fB.getUserData() == "ball") {
-
-
 
                     if (fA.getBody().getLinearVelocity().x > 0) {
 
@@ -395,6 +392,8 @@ public class PlayScreen extends Stage implements Screen {
                         } else {
                             fB.getBody().applyLinearImpulse(new Vector2(6f, 8f), fB.getBody().getWorldCenter(), true);
                         }
+
+                        fA.getBody().setLinearVelocity(new Vector2(0, 0));
                     } else {
 
                         if (fA.getBody().getLinearVelocity().y > 0) {
@@ -403,6 +402,8 @@ public class PlayScreen extends Stage implements Screen {
                         } else {
                             fB.getBody().applyLinearImpulse(new Vector2(-6f, 8f), fB.getBody().getWorldCenter(), true);
                         }
+
+                        fA.getBody().setLinearVelocity(new Vector2(0, 0));
                     }
                 }
             }
@@ -462,7 +463,7 @@ public class PlayScreen extends Stage implements Screen {
         }
     }
 
-    public void endSession(){
+    public void endSession() {
         game.setScreen(new WelcomeScreen(game));
     }
 
