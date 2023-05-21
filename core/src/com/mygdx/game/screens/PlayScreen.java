@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Soccer;
 import com.mygdx.game.sprite.Ball;
@@ -124,7 +125,7 @@ public class PlayScreen extends Stage implements Screen {
         labelStyle.font = game.arcadeFont;
         typingLabel = new TypingLabel("", labelStyle);
         typingLabel.setFontScale(2f, 2f);
-        typingLabel.setPosition((Soccer.SCREEN_WIDTH / 2) - 175, (Soccer.SCREEN_HEIGHT / 2) + 175);
+        typingLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) - 175, (Soccer.SCREEN_HEIGHT / 2f) + 175);
 
         atlas = new TextureAtlas(atlasLeftPlayer + ".atlas");
         player = new Player(atlas, world, this, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, false, atlasLeftPlayer);
@@ -242,7 +243,6 @@ public class PlayScreen extends Stage implements Screen {
                     typingLabel.setText("");
                     goalTimer = 4;
                     goal = false;
-
                 }
             }
         }
@@ -353,6 +353,10 @@ public class PlayScreen extends Stage implements Screen {
                     typingLabel.setText("{SICK}G   O   A   L");
                     goal = true;
                 }
+
+                if (fA.getUserData() == "body" && fB.getUserData() == "ball") {
+                    //stopPlayer(fA);
+                }
                 /*
                 Kick shot
                  */
@@ -366,8 +370,6 @@ public class PlayScreen extends Stage implements Screen {
                         } else {
                             fB.getBody().applyLinearImpulse(new Vector2(3f, 12f), fB.getBody().getWorldCenter(), true);
                         }
-
-                        fA.getBody().setLinearVelocity(new Vector2(0, 0));
                     } else {
 
                         if (fA.getBody().getLinearVelocity().x <= -3.4f) {
@@ -375,42 +377,51 @@ public class PlayScreen extends Stage implements Screen {
                         } else {
                             fB.getBody().applyLinearImpulse(new Vector2(-3f, 12f), fB.getBody().getWorldCenter(), true);
                         }
-
-                        fA.getBody().setLinearVelocity(new Vector2(0, 0));
                     }
+
+                    //stopPlayer(fA);
                 }
                 /*
                 Headshot
                  */
                 if (fA.getUserData() == "head" && fB.getUserData() == "ball") {
 
-                    if (fA.getBody().getLinearVelocity().x > 0) {
+                    if (fA.getBody().getLinearVelocity().x >= 0) {
 
-                        if (fA.getBody().getLinearVelocity().y > 0) {
-                            System.out.println("colpo potente");
+                        if (fA.getBody().getLinearVelocity().y >= 0) {
                             fB.getBody().applyLinearImpulse(new Vector2(12f, 8f), fB.getBody().getWorldCenter(), true);
                         } else {
                             fB.getBody().applyLinearImpulse(new Vector2(6f, 8f), fB.getBody().getWorldCenter(), true);
                         }
-
-                        fA.getBody().setLinearVelocity(new Vector2(0, 0));
                     } else {
 
-                        if (fA.getBody().getLinearVelocity().y > 0) {
-                            System.out.println("in volo");
+                        if (fA.getBody().getLinearVelocity().y >= 0) {
                             fB.getBody().applyLinearImpulse(new Vector2(-12f, 8f), fB.getBody().getWorldCenter(), true);
                         } else {
                             fB.getBody().applyLinearImpulse(new Vector2(-6f, 8f), fB.getBody().getWorldCenter(), true);
                         }
-
-                        fA.getBody().setLinearVelocity(new Vector2(0, 0));
                     }
+
+                    //stopPlayer(fA);
                 }
             }
 
             @Override
             public void endContact(Contact contact) {
+                Fixture fA = contact.getFixtureA();
+                Fixture fB = contact.getFixtureB();
 
+                if(fA.getUserData() == "body" && fB.getUserData() == "ball"){
+                    fA.getBody().setLinearVelocity(new Vector2(0,0));
+                }
+
+                if(fA.getUserData() == "foot" && fB.getUserData() == "ball"){
+                    fA.getBody().setLinearVelocity(new Vector2(0,0));
+                }
+
+                if(fA.getUserData() == "head" && fB.getUserData() == "ball"){
+                    fA.getBody().setLinearVelocity(new Vector2(0,0));
+                }
             }
 
             @Override
@@ -421,6 +432,13 @@ public class PlayScreen extends Stage implements Screen {
             public void postSolve(Contact contact, ContactImpulse impulse) {
             }
         });
+    }
+
+    private void stopPlayer(Fixture fixture) {
+        Array<Fixture> fixtureList = fixture.getBody().getFixtureList();
+        for (Fixture fixtures : fixtureList) {
+            fixtures.getBody().setLinearVelocity(new Vector2(0, 0));
+        }
     }
 
     public void handleRightPlayerMovements() {
