@@ -1,7 +1,9 @@
 package com.mygdx.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -145,6 +147,7 @@ public class SelectionScreen implements Screen {
             }
         });
 
+
         rightArrowL.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -203,7 +206,10 @@ public class SelectionScreen implements Screen {
 
     @Override
     public void render(float delta) {
+
         ScreenUtils.clear(0, 0, 0, 1);
+        Gdx.gl.glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.update();
 
         stateTime += Gdx.graphics.getDeltaTime();
@@ -217,9 +223,18 @@ public class SelectionScreen implements Screen {
         spriteImage2.setSize(currentFrame2.getRegionWidth(), currentFrame2.getRegionHeight());
 
         game.batch.begin();
+
         backgroundSprite.draw(game.batch, .25f);
+        handleClickEvent();
+
         game.batch.end();
         stage.draw();
+    }
+
+    private void handleClickEvent(){
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
+            game.setScreen(new PlayScreen(game, game.spriteAtlas.get(index), game.spriteAtlas.get(index2)));
+        }
     }
 
     @Override
