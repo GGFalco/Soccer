@@ -24,6 +24,9 @@ public class Ground extends Sprite {
         defineGround();
     }
 
+    /**
+     * Ground definition
+     */
     public void defineGround(){
 
         BodyDef bodyDef = new BodyDef();

@@ -231,6 +231,9 @@ public class SelectionScreen implements Screen {
         stage.draw();
     }
 
+    /**
+     * Handle the click events on the screen
+     */
     private void handleClickEvent(){
         if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
             game.setScreen(new PlayScreen(game, game.spriteAtlas.get(index), game.spriteAtlas.get(index2)));

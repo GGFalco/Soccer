@@ -29,6 +29,9 @@ public class Ball extends Sprite {
 
     }
 
+    /**
+     * Ball definition
+     */
     public void defineBall(){
 
         BodyDef bodyDef = new BodyDef();

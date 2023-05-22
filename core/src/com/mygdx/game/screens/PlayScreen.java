@@ -103,7 +103,7 @@ public class PlayScreen extends Stage implements Screen {
     }
 
     /**
-     * Environment creation in terms of assets and sprites
+     * Environment configuration
      */
     public void environmentConfiguration() {
 
@@ -161,6 +161,10 @@ public class PlayScreen extends Stage implements Screen {
 
     }
 
+    /**
+     * World, camera and sprites updates
+     * @param dt The time in seconds since the last render
+     */
     public void update(float dt) {
 
         world.step(1 / 60f, 6, 2);
@@ -232,6 +236,9 @@ public class PlayScreen extends Stage implements Screen {
         handleClickEvents();
     }
 
+    /**
+     * Handle the event where the ball is at rest
+     */
     public void handleStoppedBall() {
 
         if (isStopped) {
@@ -258,6 +265,13 @@ public class PlayScreen extends Stage implements Screen {
         }
     }
 
+    /**
+     * Restore the initial configuration of the environment
+     * @param world the world
+     * @param toRemoveBall the ball to restore
+     * @param toRemoveLeft the left player to restore
+     * @param toRemoveRight the right player to restore
+     */
     private void restoreWorld(World world, final Body toRemoveBall, final Body toRemoveLeft, final Body toRemoveRight) {
         world.destroyBody(toRemoveBall);
         world.destroyBody(toRemoveLeft);
@@ -270,6 +284,9 @@ public class PlayScreen extends Stage implements Screen {
         rightPlayer = new Player(atlas, world, PlayScreen.this, (Soccer.SCREEN_WIDTH - 200) / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, true, atlasRightPlayer);
     }
 
+    /**
+     * Handle the goal event. It adds a TypingLabel to the screen where "GOAL" appears
+     */
     public void handleGoalEvent() {
 
         if (goal) {
@@ -292,6 +309,9 @@ public class PlayScreen extends Stage implements Screen {
         }
     }
 
+    /**
+     * Handle the match timer when the game is pausing or is running
+     */
     public void handleTimer() {
 
         if (!timeExpired && !pause) {
@@ -317,6 +337,9 @@ public class PlayScreen extends Stage implements Screen {
         }
     }
 
+    /**
+     * Handle the click events on the screen
+     */
     public void handleClickEvents() {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
 
@@ -330,6 +353,9 @@ public class PlayScreen extends Stage implements Screen {
         }
     }
 
+    /**
+     * Handle collisions between bodies in the environment
+     */
     public void handleCollision() {
         world.setContactListener(new ContactListener() {
             @Override
@@ -456,6 +482,9 @@ public class PlayScreen extends Stage implements Screen {
         isStopped = ball.b2body.getLinearVelocity().equals(new Vector2(0, 0));
     }
 
+    /**
+     * Handle the movements of the right player
+     */
     public void handleRightPlayerMovements() {
         if (Gdx.input.isKeyPressed(Input.Keys.UP) && rightPlayer.b2body.getLinearVelocity().y <= 4f && rightPlayer.b2body.getPosition().y <= 2.37f) {
             rightPlayer.jump();
@@ -471,7 +500,7 @@ public class PlayScreen extends Stage implements Screen {
     }
 
     /**
-     * Handle the sprite movement
+     * Handle the movements of the left player
      */
     public void handleLeftPlayerMovements() {
 
@@ -496,6 +525,9 @@ public class PlayScreen extends Stage implements Screen {
         }
     }
 
+    /**
+     * Ending session change screen
+     */
     public void endSession() {
         game.setScreen(new WelcomeScreen(game));
     }

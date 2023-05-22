@@ -21,6 +21,9 @@ public class Wall extends Sprite {
         defineWall();
     }
 
+    /**
+     * Wall definition
+     */
     public void defineWall(){
 
         BodyDef bodyDef = new BodyDef();

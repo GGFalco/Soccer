@@ -27,6 +27,9 @@ public class Net extends Sprite {
         defineNet();
     }
 
+    /**
+     * Net definition
+     */
     public void defineNet(){
 
         BodyDef bodyDef = new BodyDef();

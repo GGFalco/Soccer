@@ -77,6 +77,9 @@ public class WelcomeScreen implements Screen {
         stage.draw();
     }
 
+    /**
+     * Handle the click events on the screen
+     */
     private void handleClickEvents(){
         if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
             game.setScreen(new SelectionScreen(game));

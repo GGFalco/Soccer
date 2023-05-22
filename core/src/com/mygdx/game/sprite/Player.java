@@ -56,12 +56,21 @@ public class Player extends Sprite {
         setRegion(playerStand);
     }
 
+    /**
+     * Sprite update
+     * @param dt The time in seconds since the last render
+     */
     public void update(float dt) {
 
         setRegion(getFrame(dt));
         setCenter(b2body.getPosition().x, b2body.getPosition().y + (20 / Soccer.PPM));
     }
 
+    /**
+     * Get the frame of the texture depending on the current state of the body
+     * @param dt The time in seconds since the last render
+     * @return The region of the frame animation
+     */
     public TextureRegion getFrame(float dt) {
         currentState = getState();
 
@@ -91,6 +100,10 @@ public class Player extends Sprite {
         return region;
     }
 
+    /**
+     * Get the state of the sprite
+     * @return the state of the body {JUMPING, RUNNING, STANDING}
+     */
     public State getState() {
 
         if (b2body.getLinearVelocity().y > 0 || b2body.getLinearVelocity().y < 0) {
@@ -102,6 +115,9 @@ public class Player extends Sprite {
         }
     }
 
+    /**
+     * Jump animation of the player
+     */
     public void jump() {
         if (currentState != State.JUMPING) {
             b2body.applyLinearImpulse(new Vector2(0, 4.3f), b2body.getWorldCenter(), true);
@@ -110,7 +126,7 @@ public class Player extends Sprite {
     }
 
     /**
-     * Physic creation of rectangular player
+     * Definition of the player
      */
     public void definePlayer() {
 
