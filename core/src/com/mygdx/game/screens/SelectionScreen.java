@@ -233,8 +233,7 @@ public class SelectionScreen implements Screen {
 
     private void handleClickEvent(){
         if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
-            //game.setScreen(new PlayScreen(game, game.spriteAtlas.get(index), game.spriteAtlas.get(index2)));
-            //game.setScreen(new WelcomeScreen(game));
+            game.setScreen(new PlayScreen(game, game.spriteAtlas.get(index), game.spriteAtlas.get(index2)));
         }
     }
 
