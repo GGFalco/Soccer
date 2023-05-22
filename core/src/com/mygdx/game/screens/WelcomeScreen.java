@@ -1,7 +1,9 @@
 package com.mygdx.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -48,6 +50,7 @@ public class WelcomeScreen implements Screen {
             }
         });
 
+
         stage.addActor(playButton);
     }
 
@@ -58,13 +61,26 @@ public class WelcomeScreen implements Screen {
 
     @Override
     public void render(float delta) {
+
         ScreenUtils.clear(0,0,0,1);
+        Gdx.gl.glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         camera.update();
 
         game.batch.begin();
+
         backgroundSprite.draw(game.batch, .35f);
+        handleClickEvents();
+
         game.batch.end();
         stage.draw();
+    }
+
+    private void handleClickEvents(){
+        if(Gdx.input.isKeyPressed(Input.Keys.ENTER)){
+            game.setScreen(new SelectionScreen(game));
+        }
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Soccer;
 import com.mygdx.game.sprite.Ball;
@@ -35,8 +36,8 @@ public class PlayScreen extends Stage implements Screen {
     boolean timeExpired = false;
     private float timeSeconds = 0f;
     float period = 1f;
-    private int minutes = 1;
-    private int seconds = 0;
+    private int minutes = 0;
+    private int seconds = 10;
 
     private float goalTimeSeconds = 0f;
     private int goalTimer = 4;
@@ -88,7 +89,7 @@ public class PlayScreen extends Stage implements Screen {
         pause = false;
         goal = false;
         camera.setToOrtho(false, Soccer.V_WIDTH, Soccer.V_HEIGHT);
-        Gdx.input.setInputProcessor(this);
+        Gdx.input.setInputProcessor(this.stage);
 
         environmentConfiguration();
 
@@ -174,6 +175,7 @@ public class PlayScreen extends Stage implements Screen {
     @Override
     public void render(float delta) {
 
+        ScreenUtils.clear(0, 0, 0, 1);
         Gdx.gl.glClearColor(0.0F, 0.0F, 0.0F, 1.0F);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -497,6 +499,7 @@ public class PlayScreen extends Stage implements Screen {
         stage.dispose();
         atlas.dispose();
         b2dr.dispose();
+
         world.dispose();
     }
 }
