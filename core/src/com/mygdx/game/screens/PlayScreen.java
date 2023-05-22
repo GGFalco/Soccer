@@ -11,7 +11,6 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Soccer;
 import com.mygdx.game.sprite.Ball;
@@ -354,9 +353,6 @@ public class PlayScreen extends Stage implements Screen {
                     goal = true;
                 }
 
-                if (fA.getUserData() == "body" && fB.getUserData() == "ball") {
-                    //stopPlayer(fA);
-                }
                 /*
                 Kick shot
                  */
@@ -379,7 +375,6 @@ public class PlayScreen extends Stage implements Screen {
                         }
                     }
 
-                    //stopPlayer(fA);
                 }
                 /*
                 Headshot
@@ -402,7 +397,6 @@ public class PlayScreen extends Stage implements Screen {
                         }
                     }
 
-                    //stopPlayer(fA);
                 }
             }
 
@@ -434,12 +428,6 @@ public class PlayScreen extends Stage implements Screen {
         });
     }
 
-    private void stopPlayer(Fixture fixture) {
-        Array<Fixture> fixtureList = fixture.getBody().getFixtureList();
-        for (Fixture fixtures : fixtureList) {
-            fixtures.getBody().setLinearVelocity(new Vector2(0, 0));
-        }
-    }
 
     public void handleRightPlayerMovements() {
         if (Gdx.input.isKeyPressed(Input.Keys.UP) && rightPlayer.b2body.getLinearVelocity().y <= 4f && rightPlayer.b2body.getPosition().y <= 2.37f) {
@@ -504,6 +492,8 @@ public class PlayScreen extends Stage implements Screen {
     @Override
     public void dispose() {
         skin.dispose();
+        backgroundScreen.dispose();
+        atlas.dispose();
         stage.dispose();
         atlas.dispose();
         b2dr.dispose();

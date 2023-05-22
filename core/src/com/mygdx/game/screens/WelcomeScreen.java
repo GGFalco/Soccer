@@ -91,5 +91,6 @@ public class WelcomeScreen implements Screen {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+        backgroundScreen.dispose();
     }
 }

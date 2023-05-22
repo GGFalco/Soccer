@@ -246,6 +246,9 @@ public class SelectionScreen implements Screen {
     public void dispose() {
         skin.dispose();
         stage.dispose();
+        backgroundScreen.dispose();
+        charSheet.dispose();
+        charSheet2.dispose();
     }
 
     /**
