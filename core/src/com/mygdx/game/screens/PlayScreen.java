@@ -499,7 +499,6 @@ public class PlayScreen extends Stage implements Screen {
         stage.dispose();
         atlas.dispose();
         b2dr.dispose();
-
         world.dispose();
     }
 }
