@@ -36,11 +36,15 @@ public class PlayScreen extends Stage implements Screen {
     boolean timeExpired = false;
     private float timeSeconds = 0f;
     float period = 1f;
-    private int minutes = 0;
-    private int seconds = 10;
+    private int minutes = 1;
+    private int seconds = 30;
 
     private float goalTimeSeconds = 0f;
     private int goalTimer = 4;
+
+    boolean isStopped = false;
+    private float stopBallTimeSeconds = 0f;
+    private int stopBallTimer = 3;
 
     Texture backgroundScreen;
     Sprite backgroundSprite;
@@ -136,8 +140,8 @@ public class PlayScreen extends Stage implements Screen {
         ground = new Ground(world, 0, (Soccer.V_HEIGHT / 8) + (20 / Soccer.PPM), 1920, 10);
         sky = new Ground(world, 0, Soccer.V_HEIGHT, 1920, 10);
 
-        leftDoor = new Ground(world, 0, (Soccer.SCREEN_HEIGHT - 625) / Soccer.PPM, 102, 18);
-        rightDoor = new Ground(world, Soccer.SCREEN_WIDTH / Soccer.PPM, (Soccer.SCREEN_HEIGHT - 625) / Soccer.PPM, 102, 18);
+        leftDoor = new Ground(world, 0, (Soccer.SCREEN_HEIGHT - 633) / Soccer.PPM, 102, 18);
+        rightDoor = new Ground(world, Soccer.SCREEN_WIDTH / Soccer.PPM, (Soccer.SCREEN_HEIGHT - 633) / Soccer.PPM, 102, 18);
 
         leftSoccerGoal = new Net(world, 20 / Soccer.PPM, (Soccer.SCREEN_HEIGHT - 790) / Soccer.PPM, 20, 170, "leftNet");
         rightSoccerGoal = new Net(world, (Soccer.SCREEN_WIDTH - 20) / Soccer.PPM, (Soccer.SCREEN_HEIGHT - 790) / Soccer.PPM, 20, 170, "rightNet");
@@ -200,6 +204,7 @@ public class PlayScreen extends Stage implements Screen {
                 ball.draw(game.batch, 1);
                 typingLabel.act(delta);
                 handleGoalEvent();
+                handleStoppedBall();
 
                 game.batch.end();
                 stage.draw();
@@ -225,6 +230,44 @@ public class PlayScreen extends Stage implements Screen {
         }
 
         handleClickEvents();
+    }
+
+    public void handleStoppedBall() {
+
+        if (isStopped) {
+            stopBallTimeSeconds += Gdx.graphics.getDeltaTime();
+            if (stopBallTimeSeconds > period) {
+                stopBallTimeSeconds -= period;
+                stopBallTimer--;
+                System.out.println(stopBallTimer);
+
+                if (stopBallTimer <= 0) {
+                    final Body toRemove = ball.b2body.getFixtureList().first().getBody();
+                    final Body toRemoveLeft = player.b2body.getFixtureList().first().getBody();
+                    final Body toRemoveRight = rightPlayer.b2body.getFixtureList().first().getBody();
+
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            restoreWorld(world, toRemove, toRemoveLeft, toRemoveRight);
+                        }
+                    });
+                    isStopped = false;
+                }
+            }
+        }
+    }
+
+    private void restoreWorld(World world, final Body toRemoveBall, final Body toRemoveLeft, final Body toRemoveRight) {
+        world.destroyBody(toRemoveBall);
+        world.destroyBody(toRemoveLeft);
+        world.destroyBody(toRemoveRight);
+
+        ball = new Ball(world, Soccer.V_WIDTH / 2, Soccer.V_HEIGHT / 2);
+        atlas = new TextureAtlas(atlasLeftPlayer + ".atlas");
+        player = new Player(atlas, world, PlayScreen.this, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, false, atlasLeftPlayer);
+        atlas = new TextureAtlas(atlasRightPlayer + ".atlas");
+        rightPlayer = new Player(atlas, world, PlayScreen.this, (Soccer.SCREEN_WIDTH - 200) / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, true, atlasRightPlayer);
     }
 
     public void handleGoalEvent() {
@@ -268,7 +311,6 @@ public class PlayScreen extends Stage implements Screen {
 
                 if (minutes == 0 && seconds <= 0) {
                     timeExpired = true;
-                    //pause = true;
                     endSession();
                 }
             }
@@ -307,15 +349,7 @@ public class PlayScreen extends Stage implements Screen {
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
-                            world.destroyBody(toRemove);
-                            world.destroyBody(toRemoveLeft);
-                            world.destroyBody(toRemoveRight);
-
-                            ball = new Ball(world, Soccer.V_WIDTH / 2, Soccer.V_HEIGHT / 2);
-                            atlas = new TextureAtlas(atlasLeftPlayer + ".atlas");
-                            player = new Player(atlas, world, PlayScreen.this, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, false, atlasLeftPlayer);
-                            atlas = new TextureAtlas(atlasRightPlayer + ".atlas");
-                            rightPlayer = new Player(atlas, world, PlayScreen.this, (Soccer.SCREEN_WIDTH - 200) / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, true, atlasRightPlayer);
+                            restoreWorld(world, toRemove, toRemoveLeft, toRemoveRight);
                         }
                     });
 
@@ -337,15 +371,7 @@ public class PlayScreen extends Stage implements Screen {
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
-                            world.destroyBody(toRemove);
-                            world.destroyBody(toRemoveLeft);
-                            world.destroyBody(toRemoveRight);
-
-                            ball = new Ball(world, Soccer.V_WIDTH / 2, Soccer.V_HEIGHT / 2);
-                            atlas = new TextureAtlas(atlasLeftPlayer + ".atlas");
-                            player = new Player(atlas, world, PlayScreen.this, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, false, atlasLeftPlayer);
-                            atlas = new TextureAtlas(atlasRightPlayer + ".atlas");
-                            rightPlayer = new Player(atlas, world, PlayScreen.this, (Soccer.SCREEN_WIDTH - 200) / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, true, atlasRightPlayer);
+                            restoreWorld(world, toRemove, toRemoveLeft, toRemoveRight);
                         }
                     });
 
@@ -376,7 +402,6 @@ public class PlayScreen extends Stage implements Screen {
                             fB.getBody().applyLinearImpulse(new Vector2(-3f, 12f), fB.getBody().getWorldCenter(), true);
                         }
                     }
-
                 }
                 /*
                 Headshot
@@ -398,7 +423,6 @@ public class PlayScreen extends Stage implements Screen {
                             fB.getBody().applyLinearImpulse(new Vector2(-6f, 8f), fB.getBody().getWorldCenter(), true);
                         }
                     }
-
                 }
             }
 
@@ -407,16 +431,16 @@ public class PlayScreen extends Stage implements Screen {
                 Fixture fA = contact.getFixtureA();
                 Fixture fB = contact.getFixtureB();
 
-                if(fA.getUserData() == "body" && fB.getUserData() == "ball"){
-                    fA.getBody().setLinearVelocity(new Vector2(0,0));
+                if (fA.getUserData() == "body" && fB.getUserData() == "ball") {
+                    fA.getBody().setLinearVelocity(new Vector2(0, 0));
                 }
 
-                if(fA.getUserData() == "foot" && fB.getUserData() == "ball"){
-                    fA.getBody().setLinearVelocity(new Vector2(0,0));
+                if (fA.getUserData() == "foot" && fB.getUserData() == "ball") {
+                    fA.getBody().setLinearVelocity(new Vector2(0, 0));
                 }
 
-                if(fA.getUserData() == "head" && fB.getUserData() == "ball"){
-                    fA.getBody().setLinearVelocity(new Vector2(0,0));
+                if (fA.getUserData() == "head" && fB.getUserData() == "ball") {
+                    fA.getBody().setLinearVelocity(new Vector2(0, 0));
                 }
             }
 
@@ -428,8 +452,9 @@ public class PlayScreen extends Stage implements Screen {
             public void postSolve(Contact contact, ContactImpulse impulse) {
             }
         });
-    }
 
+        isStopped = ball.b2body.getLinearVelocity().equals(new Vector2(0, 0));
+    }
 
     public void handleRightPlayerMovements() {
         if (Gdx.input.isKeyPressed(Input.Keys.UP) && rightPlayer.b2body.getLinearVelocity().y <= 4f && rightPlayer.b2body.getPosition().y <= 2.37f) {
