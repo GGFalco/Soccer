@@ -75,8 +75,8 @@ public class PlayScreen extends Stage implements Screen {
     String atlasLeftPlayer;
     String atlasRightPlayer;
 
-    static int leftGoal = 0;
-    static int rightGoal = 0;
+    static int leftGoal;
+    static int rightGoal;
     static boolean pause;
     static boolean goal;
 
@@ -92,6 +92,8 @@ public class PlayScreen extends Stage implements Screen {
         this.atlasRightPlayer = atlasRightPlayer;
         pause = false;
         goal = false;
+        leftGoal = 0;
+        rightGoal = 0;
         camera.setToOrtho(false, Soccer.V_WIDTH, Soccer.V_HEIGHT);
         Gdx.input.setInputProcessor(this.stage);
 
@@ -112,6 +114,7 @@ public class PlayScreen extends Stage implements Screen {
 
         labelStyle = game.arcadeSkin.get("default", Label.LabelStyle.class);
         labelStyle.font = game.arcadeFont;
+
 
         leftScoreLabel = new Label("0", labelStyle);
         leftScoreLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) - 150, Soccer.SCREEN_HEIGHT - 150);
