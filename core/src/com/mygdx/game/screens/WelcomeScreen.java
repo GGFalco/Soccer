@@ -39,6 +39,7 @@ public class WelcomeScreen implements Screen {
 
         backgroundScreen = new Texture(Gdx.files.internal("backgrounds/MainBackground.png"));
         backgroundSprite = new Sprite(backgroundScreen);
+        backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         playButton = new TextButton("PLAY", game.textButtonStyle);
         playButton.setPosition((float) (Gdx.graphics.getWidth() / 2 * .95), (float) (Gdx.graphics.getHeight() / 2));
