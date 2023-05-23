@@ -31,6 +31,9 @@ public class SelectionScreen implements Screen {
     Label selectLabel;
     Label.LabelStyle labelStyle;
 
+    Label leftPlayerName;
+    Label rightPlayerName;
+
     Image spriteImage;
     Animation<TextureRegion> charAnimation;
     TextureRegion[][] tmp;
@@ -49,8 +52,8 @@ public class SelectionScreen implements Screen {
     TextButton leftArrowR;
     TextButton playButton;
 
-    static int index = 0;
-    static int index2 = 0;
+    static int index;
+    static int index2;
 
     public SelectionScreen(final Soccer game) {
 
@@ -58,16 +61,27 @@ public class SelectionScreen implements Screen {
         this.skin = game.skin;
         this.stage = new Stage();
         this.camera = new OrthographicCamera(1920, 1080);
+        index = 0;
+        index2 = 0;
         camera.setToOrtho(false, 1920, 1080);
         Gdx.input.setInputProcessor(stage);
 
         backgroundScreen = new Texture(Gdx.files.internal("backgrounds/selectionBackground.jpg"));
         backgroundSprite = new Sprite(backgroundScreen);
+        backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         labelStyle = skin.get("c2", Label.LabelStyle.class);
         labelStyle.font = game.bigFont;
         selectLabel = new Label("SELECT YOUR CHARACTER", labelStyle);
         selectLabel.setPosition(775, Gdx.graphics.getHeight() - 200);
+
+        labelStyle = game.arcadeSkin.get("default", Label.LabelStyle.class);
+        labelStyle.font = game.arcadeFont;
+        labelStyle.font.getData().setScale(1.5f,1.5f);
+        leftPlayerName = new Label("", labelStyle);
+        leftPlayerName.setPosition(345, Gdx.graphics.getHeight() - 740);
+        rightPlayerName = new Label("", labelStyle);
+        rightPlayerName.setPosition(Gdx.graphics.getWidth() - 480, Gdx.graphics.getHeight() - 740);
 
         /*
          * Left character animation
@@ -78,7 +92,7 @@ public class SelectionScreen implements Screen {
         spriteImage.setPosition(300, Gdx.graphics.getHeight() - 650);
         spriteImage.setScale(3);
 
-        changeSprite("red", true);
+        changeSprite("Giustino", true);
 
         /*
          * Right character animation
@@ -89,7 +103,7 @@ public class SelectionScreen implements Screen {
         spriteImage2.setPosition(Gdx.graphics.getWidth() - 550, Gdx.graphics.getHeight() - 650);
         spriteImage2.setScale(3);
 
-        changeSprite("red", false);
+        changeSprite("Giustino", false);
 
         configureButtons();
         handleButtonClick();
@@ -100,6 +114,8 @@ public class SelectionScreen implements Screen {
         /*
          * Add actors
          */
+        stage.addActor(leftPlayerName);
+        stage.addActor(rightPlayerName);
         stage.addActor(selectLabel);
         stage.addActor(spriteImage);
         stage.addActor(spriteImage2);
@@ -222,6 +238,8 @@ public class SelectionScreen implements Screen {
         spriteImage2.setDrawable(new TextureRegionDrawable(currentFrame2));
         spriteImage2.setSize(currentFrame2.getRegionWidth(), currentFrame2.getRegionHeight());
 
+        updateNames();
+
         game.batch.begin();
 
         backgroundSprite.draw(game.batch, .25f);
@@ -230,6 +248,16 @@ public class SelectionScreen implements Screen {
         game.batch.end();
         stage.draw();
     }
+
+    /**
+     * Update the sprite name label on player selection
+     */
+    public void updateNames(){
+
+        leftPlayerName.setText(game.spriteNames.get(index));
+        rightPlayerName.setText(game.spriteNames.get(index2));
+    }
+
 
     /**
      * Handle the click events on the screen
