@@ -72,9 +72,9 @@ public class Soccer extends Game {
         textButtonStyle = skin.get("default", TextButton.TextButtonStyle.class);
         textButtonStyle.font = this.bigFont;
 
-        spriteNames.add("red");
-        spriteNames.add("mario");
-        spriteNames.add("luigi");
+        spriteNames.add("Giustino");
+        spriteNames.add("Mario");
+        spriteNames.add("Matteo S.");
         spriteAtlas.add("char1-walk");
         spriteAtlas.add("char2-walk");
         spriteAtlas.add("char3-walk");
