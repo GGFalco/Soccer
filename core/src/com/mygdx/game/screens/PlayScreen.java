@@ -75,6 +75,9 @@ public class PlayScreen extends Stage implements Screen {
     String atlasLeftPlayer;
     String atlasRightPlayer;
 
+    Label leftPlayerName;
+    Label rightPlayerName;
+
     static int leftGoal;
     static int rightGoal;
     static boolean pause;
@@ -115,6 +118,11 @@ public class PlayScreen extends Stage implements Screen {
         labelStyle = game.arcadeSkin.get("default", Label.LabelStyle.class);
         labelStyle.font = game.arcadeFont;
 
+        leftPlayerName = new Label(game.spriteNames.get(game.spriteAtlas.indexOf(atlasLeftPlayer)), labelStyle);
+        leftPlayerName.setPosition((Soccer.SCREEN_WIDTH / 2f) - 450, Soccer.SCREEN_HEIGHT - 150);
+        rightPlayerName = new Label(game.spriteNames.get(game.spriteAtlas.indexOf(atlasRightPlayer)), labelStyle);
+        rightPlayerName.setPosition((Soccer.SCREEN_WIDTH / 2f) + 250, Soccer.SCREEN_HEIGHT - 150);
+
 
         leftScoreLabel = new Label("0", labelStyle);
         leftScoreLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) - 150, Soccer.SCREEN_HEIGHT - 150);
@@ -152,6 +160,9 @@ public class PlayScreen extends Stage implements Screen {
         leftWall = new Wall(world, 0, 0);
         rightWall = new Wall(world, Soccer.V_WIDTH, 0);
 
+
+        stage.addActor(leftPlayerName);
+        stage.addActor(rightPlayerName);
         stage.addActor(leftScoreLabel);
         stage.addActor(rightScoreLabel);
         stage.addActor(minuteLabel);
@@ -204,6 +215,8 @@ public class PlayScreen extends Stage implements Screen {
                 game.batch.begin();
 
                 leftScoreLabel.draw(game.batch, 1);
+                leftPlayerName.draw(game.batch, 1);
+                rightPlayer.draw(game.batch, 1);
                 rightScoreLabel.draw(game.batch, 1);
                 backgroundSprite.draw(game.batch, 1f);
                 player.draw(game.batch, 1);
