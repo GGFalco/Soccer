@@ -2,6 +2,7 @@ package com.mygdx.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -123,7 +124,6 @@ public class PlayScreen extends Stage implements Screen {
         rightPlayerName = new Label(game.spriteNames.get(game.spriteAtlas.indexOf(atlasRightPlayer)), labelStyle);
         rightPlayerName.setPosition((Soccer.SCREEN_WIDTH / 2f) + 250, Soccer.SCREEN_HEIGHT - 150);
 
-
         leftScoreLabel = new Label("0", labelStyle);
         leftScoreLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) - 150, Soccer.SCREEN_HEIGHT - 150);
         rightScoreLabel = new Label("0", labelStyle);
@@ -160,7 +160,6 @@ public class PlayScreen extends Stage implements Screen {
         leftWall = new Wall(world, 0, 0);
         rightWall = new Wall(world, Soccer.V_WIDTH, 0);
 
-
         stage.addActor(leftPlayerName);
         stage.addActor(rightPlayerName);
         stage.addActor(leftScoreLabel);
@@ -177,6 +176,7 @@ public class PlayScreen extends Stage implements Screen {
 
     /**
      * World, camera and sprites updates
+     *
      * @param dt The time in seconds since the last render
      */
     public void update(float dt) {
@@ -265,6 +265,7 @@ public class PlayScreen extends Stage implements Screen {
                 System.out.println(stopBallTimer);
 
                 if (stopBallTimer <= 0) {
+                    stopBallTimer = 3;
                     final Body toRemove = ball.b2body.getFixtureList().first().getBody();
                     final Body toRemoveLeft = player.b2body.getFixtureList().first().getBody();
                     final Body toRemoveRight = rightPlayer.b2body.getFixtureList().first().getBody();
@@ -276,6 +277,7 @@ public class PlayScreen extends Stage implements Screen {
                         }
                     });
                     isStopped = false;
+
                 }
             }
         }
@@ -283,6 +285,7 @@ public class PlayScreen extends Stage implements Screen {
 
     /**
      * Restore the initial configuration of the environment
+     *
      * @param world the world
      * @param toRemoveBall the ball to restore
      * @param toRemoveLeft the left player to restore
@@ -509,6 +512,56 @@ public class PlayScreen extends Stage implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && rightPlayer.b2body.getLinearVelocity().x <= 3f) {
             rightPlayer.b2body.applyLinearImpulse(new Vector2(.8f, 0), rightPlayer.b2body.getWorldCenter(), true);
         }
+
+        Gdx.input.setInputProcessor(new InputProcessor() {
+            @Override
+            public boolean keyDown(int keycode) {
+                return false;
+            }
+
+            @Override
+            public boolean keyUp(int keycode) {
+                if ((keycode == Input.Keys.RIGHT || keycode == Input.Keys.LEFT) && rightPlayer.currentState == Player.State.RUNNING) {
+                    rightPlayer.b2body.setLinearVelocity(new Vector2(0, 0));
+                }
+
+                if ((keycode == Input.Keys.D || keycode == Input.Keys.A) && player.currentState == Player.State.RUNNING){
+                    player.b2body.setLinearVelocity(new Vector2(0, 0));
+                }
+
+                return false;
+            }
+
+            @Override
+            public boolean keyTyped(char character) {
+                return false;
+            }
+
+            @Override
+            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                return false;
+            }
+
+            @Override
+            public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+                return false;
+            }
+
+            @Override
+            public boolean touchDragged(int screenX, int screenY, int pointer) {
+                return false;
+            }
+
+            @Override
+            public boolean mouseMoved(int screenX, int screenY) {
+                return false;
+            }
+
+            @Override
+            public boolean scrolled(float amountX, float amountY) {
+                return false;
+            }
+        });
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && rightPlayer.b2body.getLinearVelocity().x >= -3f) {
             rightPlayer.b2body.applyLinearImpulse(new Vector2(-.8f, 0), rightPlayer.b2body.getWorldCenter(), true);
