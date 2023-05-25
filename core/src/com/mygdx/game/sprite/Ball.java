@@ -42,7 +42,7 @@ public class Ball extends Sprite {
         b2body.setUserData("ball");
 
         FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.restitution = .7f;
+        fixtureDef.restitution = .75f;
         fixtureDef.filter.categoryBits = Soccer.BIT_BALL;
 
         CircleShape circleShape = new CircleShape();
