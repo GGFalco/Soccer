@@ -143,9 +143,9 @@ public class PlayScreen extends Stage implements Screen {
         typingLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) - 175, (Soccer.SCREEN_HEIGHT / 2f) + 175);
 
         atlas = new TextureAtlas(atlasLeftPlayer + ".atlas");
-        player = new Player(atlas, world, this, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, false, atlasLeftPlayer);
+        player = new Player(atlas, world, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, false, atlasLeftPlayer);
         atlas = new TextureAtlas(atlasRightPlayer + ".atlas");
-        rightPlayer = new Player(atlas, world, this, (Soccer.SCREEN_WIDTH - 200) / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, true, atlasRightPlayer);
+        rightPlayer = new Player(atlas, world, (Soccer.SCREEN_WIDTH - 200) / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, true, atlasRightPlayer);
         ball = new Ball(world, Soccer.V_WIDTH / 2, Soccer.V_HEIGHT / 2);
 
         ground = new Ground(world, 0, (Soccer.V_HEIGHT / 8) + (20 / Soccer.PPM), 1920, 10);
@@ -159,6 +159,8 @@ public class PlayScreen extends Stage implements Screen {
 
         leftWall = new Wall(world, 0, 0);
         rightWall = new Wall(world, Soccer.V_WIDTH, 0);
+
+        configureInputProcessor();
 
         stage.addActor(leftPlayerName);
         stage.addActor(rightPlayerName);
@@ -277,7 +279,6 @@ public class PlayScreen extends Stage implements Screen {
                         }
                     });
                     isStopped = false;
-
                 }
             }
         }
@@ -298,9 +299,9 @@ public class PlayScreen extends Stage implements Screen {
 
         ball = new Ball(world, Soccer.V_WIDTH / 2, Soccer.V_HEIGHT / 2);
         atlas = new TextureAtlas(atlasLeftPlayer + ".atlas");
-        player = new Player(atlas, world, PlayScreen.this, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, false, atlasLeftPlayer);
+        player = new Player(atlas, world, 200 / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, false, atlasLeftPlayer);
         atlas = new TextureAtlas(atlasRightPlayer + ".atlas");
-        rightPlayer = new Player(atlas, world, PlayScreen.this, (Soccer.SCREEN_WIDTH - 200) / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, true, atlasRightPlayer);
+        rightPlayer = new Player(atlas, world, (Soccer.SCREEN_WIDTH - 200) / Soccer.PPM, (Gdx.graphics.getHeight() - 850) / Soccer.PPM, true, atlasRightPlayer);
     }
 
     /**
@@ -510,9 +511,44 @@ public class PlayScreen extends Stage implements Screen {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && rightPlayer.b2body.getLinearVelocity().x <= 3f) {
-            rightPlayer.b2body.applyLinearImpulse(new Vector2(.8f, 0), rightPlayer.b2body.getWorldCenter(), true);
+            rightPlayer.b2body.applyLinearImpulse(new Vector2(1f, 0), rightPlayer.b2body.getWorldCenter(), true);
         }
 
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && rightPlayer.b2body.getLinearVelocity().x >= -3f) {
+            rightPlayer.b2body.applyLinearImpulse(new Vector2(-1f, 0), rightPlayer.b2body.getWorldCenter(), true);
+        }
+    }
+
+    /**
+     * Handle the movements of the left player
+     */
+    public void handleLeftPlayerMovements() {
+
+        if (Gdx.input.isKeyPressed(Input.Keys.W) && player.b2body.getLinearVelocity().y <= 4f && player.b2body.getPosition().y <= 2.37f) {
+
+            player.jump();
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.D) && player.b2body.getLinearVelocity().x <= 3f) {
+
+            player.b2body.applyLinearImpulse(new Vector2(1f, 0), player.b2body.getWorldCenter(), true);
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.A) && player.b2body.getLinearVelocity().x >= -3f) {
+
+            player.b2body.applyLinearImpulse(new Vector2(-1f, 0), player.b2body.getWorldCenter(), true);
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            Fixture footFixture = player.b2body.getFixtureList().get(1);
+            System.out.println(footFixture.getUserData());
+        }
+    }
+
+    /**
+     * Implements Input Processor methods
+     */
+    public void configureInputProcessor() {
         Gdx.input.setInputProcessor(new InputProcessor() {
             @Override
             public boolean keyDown(int keycode) {
@@ -525,7 +561,7 @@ public class PlayScreen extends Stage implements Screen {
                     rightPlayer.b2body.setLinearVelocity(new Vector2(0, 0));
                 }
 
-                if ((keycode == Input.Keys.D || keycode == Input.Keys.A) && player.currentState == Player.State.RUNNING){
+                if ((keycode == Input.Keys.D || keycode == Input.Keys.A) && player.currentState == Player.State.RUNNING) {
                     player.b2body.setLinearVelocity(new Vector2(0, 0));
                 }
 
@@ -562,36 +598,6 @@ public class PlayScreen extends Stage implements Screen {
                 return false;
             }
         });
-
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && rightPlayer.b2body.getLinearVelocity().x >= -3f) {
-            rightPlayer.b2body.applyLinearImpulse(new Vector2(-.8f, 0), rightPlayer.b2body.getWorldCenter(), true);
-        }
-    }
-
-    /**
-     * Handle the movements of the left player
-     */
-    public void handleLeftPlayerMovements() {
-
-        if (Gdx.input.isKeyPressed(Input.Keys.W) && player.b2body.getLinearVelocity().y <= 4f && player.b2body.getPosition().y <= 2.37f) {
-
-            player.jump();
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.D) && player.b2body.getLinearVelocity().x <= 3f) {
-
-            player.b2body.applyLinearImpulse(new Vector2(.8f, 0), player.b2body.getWorldCenter(), true);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.A) && player.b2body.getLinearVelocity().x >= -3f) {
-
-            player.b2body.applyLinearImpulse(new Vector2(-.8f, 0), player.b2body.getWorldCenter(), true);
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            Fixture footFixture = player.b2body.getFixtureList().get(1);
-            System.out.println(footFixture.getUserData());
-        }
     }
 
     /**
