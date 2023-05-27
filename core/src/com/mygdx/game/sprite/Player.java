@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Soccer;
-import com.mygdx.game.screens.PlayScreen;
 
 public class Player extends Sprite {
 
@@ -28,7 +27,7 @@ public class Player extends Sprite {
     float y;
     boolean right;
 
-    public Player(TextureAtlas atlas, World world, PlayScreen screen, float x, float y, boolean right, String region) {
+    public Player(TextureAtlas atlas, World world,float x, float y, boolean right, String region) {
 
         super(atlas.findRegion(region));
 
@@ -46,7 +45,7 @@ public class Player extends Sprite {
         for (int i = 0; i < 7; i++) {
             frames.add(new TextureRegion(getTexture(), i * 83, 0, 83, 170));
         }
-        playerRun = new Animation<>(0.3f, frames);
+        playerRun = new Animation<>(0.2f, frames);
 
         definePlayer();
 
