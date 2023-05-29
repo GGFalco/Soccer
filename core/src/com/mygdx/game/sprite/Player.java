@@ -150,10 +150,10 @@ public class Player extends Sprite {
 
         PolygonShape footShape = new PolygonShape();
         if (right) {
-            footShape.setAsBox(10 / Soccer.PPM, 33 / Soccer.PPM, new Vector2(-(13 / Soccer.PPM), -(37 / Soccer.PPM)),
+            footShape.setAsBox(10 / Soccer.PPM, 33 / Soccer.PPM, new Vector2(-(13 / Soccer.PPM), -(35 / Soccer.PPM)),
                     0);
         } else {
-            footShape.setAsBox(10 / Soccer.PPM, 33 / Soccer.PPM, new Vector2(13 / Soccer.PPM, -(37 / Soccer.PPM)), 0);
+            footShape.setAsBox(10 / Soccer.PPM, 33 / Soccer.PPM, new Vector2(13 / Soccer.PPM, -(35 / Soccer.PPM)), 0);
         }
 
 
@@ -162,8 +162,8 @@ public class Player extends Sprite {
         headFixture.filter.maskBits = Soccer.BIT_BALL | Soccer.BIT_PLAYER | Soccer.BIT_HEAD;
 
         CircleShape headShape = new CircleShape();
-        headShape.setRadius(43 / Soccer.PPM);
-        headShape.setPosition(new Vector2(0, 37 / Soccer.PPM));
+        headShape.setRadius(38 / Soccer.PPM);
+        headShape.setPosition(new Vector2(0, 48 / Soccer.PPM));
 
         footFixture.shape = footShape;
         bodyFixture.shape = polygonShape;
