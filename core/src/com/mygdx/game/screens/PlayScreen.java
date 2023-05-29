@@ -131,10 +131,10 @@ public class PlayScreen extends Stage implements Screen {
 
         labelStyle.font = game.littleArcadeFont;
         minuteLabel = new Label(String.format("%02d:", minutes), labelStyle);
-        minuteLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) - 40, Soccer.SCREEN_HEIGHT - 150);
+        minuteLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) - 40, Soccer.SCREEN_HEIGHT - 120);
         minuteLabel.setColor(Color.SKY);
         secondsLabel = new Label(String.format("%02d", seconds), labelStyle);
-        secondsLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) + 40, Soccer.SCREEN_HEIGHT - 150);
+        secondsLabel.setPosition((Soccer.SCREEN_WIDTH / 2f) + 40, Soccer.SCREEN_HEIGHT - 120);
         secondsLabel.setColor(Color.SKY);
 
         labelStyle.font = game.arcadeFont;
@@ -511,11 +511,11 @@ public class PlayScreen extends Stage implements Screen {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && rightPlayer.b2body.getLinearVelocity().x <= 3f) {
-            rightPlayer.b2body.applyLinearImpulse(new Vector2(1f, 0), rightPlayer.b2body.getWorldCenter(), true);
+            rightPlayer.b2body.applyLinearImpulse(new Vector2(1.5f, 0), rightPlayer.b2body.getWorldCenter(), true);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && rightPlayer.b2body.getLinearVelocity().x >= -3f) {
-            rightPlayer.b2body.applyLinearImpulse(new Vector2(-1f, 0), rightPlayer.b2body.getWorldCenter(), true);
+            rightPlayer.b2body.applyLinearImpulse(new Vector2(-1.5f, 0), rightPlayer.b2body.getWorldCenter(), true);
         }
     }
 
@@ -531,12 +531,12 @@ public class PlayScreen extends Stage implements Screen {
 
         if (Gdx.input.isKeyPressed(Input.Keys.D) && player.b2body.getLinearVelocity().x <= 3f) {
 
-            player.b2body.applyLinearImpulse(new Vector2(1f, 0), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2(1.5f, 0), player.b2body.getWorldCenter(), true);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A) && player.b2body.getLinearVelocity().x >= -3f) {
 
-            player.b2body.applyLinearImpulse(new Vector2(-1f, 0), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2(-1.5f, 0), player.b2body.getWorldCenter(), true);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
