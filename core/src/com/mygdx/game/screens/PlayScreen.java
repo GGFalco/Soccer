@@ -220,7 +220,7 @@ public class PlayScreen extends Stage implements Screen {
                 leftPlayerName.draw(game.batch, 1);
                 rightPlayer.draw(game.batch, 1);
                 rightScoreLabel.draw(game.batch, 1);
-                backgroundSprite.draw(game.batch, 1f);
+                backgroundSprite.draw(game.batch, .1f);
                 player.draw(game.batch, 1);
                 rightPlayer.draw(game.batch, 1);
                 ball.draw(game.batch, 1);
@@ -436,16 +436,20 @@ public class PlayScreen extends Stage implements Screen {
                     if (fA.getBody().getLinearVelocity().x >= 0) {
 
                         if (fA.getBody().getLinearVelocity().x >= 3.4f) {
-                            fB.getBody().applyLinearImpulse(new Vector2(10f, 4f), fB.getBody().getWorldCenter(), true);
+                            fB.getBody().applyLinearImpulse(new Vector2(10f, 4.8f), fB.getBody().getWorldCenter(), true);
+                        } else if (fA.getBody().getLinearVelocity().x == 0) {
+                            fB.getBody().applyLinearImpulse(new Vector2(3f, 6f), fB.getBody().getWorldCenter(), true);
                         } else {
-                            fB.getBody().applyLinearImpulse(new Vector2(3f, 12f), fB.getBody().getWorldCenter(), true);
+                            fB.getBody().applyLinearImpulse(new Vector2(2.7f, 8f), fB.getBody().getWorldCenter(), true);
                         }
                     } else {
 
                         if (fA.getBody().getLinearVelocity().x <= -3.4f) {
                             fB.getBody().applyLinearImpulse(new Vector2(-10f, 4f), fB.getBody().getWorldCenter(), true);
+                        } else if (fA.getBody().getLinearVelocity().x == 0) {
+                            fB.getBody().applyLinearImpulse(new Vector2(-3f, 6f), fB.getBody().getWorldCenter(), true);
                         } else {
-                            fB.getBody().applyLinearImpulse(new Vector2(-3f, 12f), fB.getBody().getWorldCenter(), true);
+                            fB.getBody().applyLinearImpulse(new Vector2(-2.7f, 8f), fB.getBody().getWorldCenter(), true);
                         }
                     }
                 }
@@ -456,17 +460,21 @@ public class PlayScreen extends Stage implements Screen {
 
                     if (fA.getBody().getLinearVelocity().x >= 0) {
 
-                        if (fA.getBody().getLinearVelocity().y >= 0) {
-                            fB.getBody().applyLinearImpulse(new Vector2(12f, 8f), fB.getBody().getWorldCenter(), true);
+                        if (fA.getBody().getLinearVelocity().y > 0 && fA.getBody().getLinearVelocity().x > 0) {
+                            fB.getBody().applyLinearImpulse(new Vector2(10f, 3f), fB.getBody().getWorldCenter(), true);
+                        } else if (fA.getBody().getLinearVelocity().x == 0 && fA.getBody().getLinearVelocity().y > 0) {
+                            fB.getBody().applyLinearImpulse(new Vector2(6f, 6f), fB.getBody().getWorldCenter(), true);
                         } else {
-                            fB.getBody().applyLinearImpulse(new Vector2(6f, 8f), fB.getBody().getWorldCenter(), true);
+                            fB.getBody().applyLinearImpulse(new Vector2(4f, 5f), fB.getBody().getWorldCenter(), true);
                         }
                     } else {
 
-                        if (fA.getBody().getLinearVelocity().y >= 0) {
-                            fB.getBody().applyLinearImpulse(new Vector2(-12f, 8f), fB.getBody().getWorldCenter(), true);
+                        if (fA.getBody().getLinearVelocity().y > 0 && fA.getBody().getLinearVelocity().x < 0) {
+                            fB.getBody().applyLinearImpulse(new Vector2(-10f, 3f), fB.getBody().getWorldCenter(), true);
+                        } else if (fA.getBody().getLinearVelocity().x == 0 && fA.getBody().getLinearVelocity().y > 0) {
+                            fB.getBody().applyLinearImpulse(new Vector2(-6f, 6f), fB.getBody().getWorldCenter(), true);
                         } else {
-                            fB.getBody().applyLinearImpulse(new Vector2(-6f, 8f), fB.getBody().getWorldCenter(), true);
+                            fB.getBody().applyLinearImpulse(new Vector2(-4f, 5f), fB.getBody().getWorldCenter(), true);
                         }
                     }
                 }
