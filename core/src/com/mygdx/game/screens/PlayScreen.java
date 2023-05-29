@@ -220,7 +220,7 @@ public class PlayScreen extends Stage implements Screen {
                 leftPlayerName.draw(game.batch, 1);
                 rightPlayer.draw(game.batch, 1);
                 rightScoreLabel.draw(game.batch, 1);
-                backgroundSprite.draw(game.batch, .1f);
+                backgroundSprite.draw(game.batch, 1f);
                 player.draw(game.batch, 1);
                 rightPlayer.draw(game.batch, 1);
                 ball.draw(game.batch, 1);
