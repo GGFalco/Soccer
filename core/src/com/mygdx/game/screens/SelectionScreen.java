@@ -3,11 +3,13 @@ package com.mygdx.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -52,6 +54,13 @@ public class SelectionScreen implements Screen {
     TextButton leftArrowR;
     TextButton playButton;
 
+    TextButton rightArrowMap;
+    TextButton leftArrowMap;
+
+    TextureAtlas mapAtlas;
+    TextureRegion mapScreen;
+    Sprite mapSprite;
+
     static int index;
     static int index2;
 
@@ -66,6 +75,12 @@ public class SelectionScreen implements Screen {
         camera.setToOrtho(false, 1920, 1080);
         Gdx.input.setInputProcessor(stage);
 
+        mapAtlas = new TextureAtlas("mappe.atlas");
+        mapScreen = new TextureRegion(mapAtlas.findRegion("sfondo_partita"));
+        mapSprite = new Sprite(mapScreen);
+        mapSprite.setPosition((Soccer.SCREEN_WIDTH - 1000) / 2f, (Soccer.SCREEN_HEIGHT - 400) / 2f);
+        mapSprite.setScale(.35f, .35f);
+
         backgroundScreen = new Texture(Gdx.files.internal("backgrounds/selectionBackground.jpg"));
         backgroundSprite = new Sprite(backgroundScreen);
         backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -73,11 +88,11 @@ public class SelectionScreen implements Screen {
         labelStyle = skin.get("c2", Label.LabelStyle.class);
         labelStyle.font = game.bigFont;
         selectLabel = new Label("SELECT YOUR CHARACTER", labelStyle);
-        selectLabel.setPosition(775, Gdx.graphics.getHeight() - 200);
+        selectLabel.setPosition(780, Gdx.graphics.getHeight() - 200);
 
         labelStyle = game.arcadeSkin.get("default", Label.LabelStyle.class);
         labelStyle.font = game.arcadeFont;
-        labelStyle.font.getData().setScale(1.5f,1.5f);
+        labelStyle.font.getData().setScale(1.5f, 1.5f);
         leftPlayerName = new Label("", labelStyle);
         leftPlayerName.setPosition(345, Gdx.graphics.getHeight() - 740);
         rightPlayerName = new Label("", labelStyle);
@@ -124,6 +139,8 @@ public class SelectionScreen implements Screen {
         stage.addActor(leftArrowL);
         stage.addActor(leftArrowR);
         stage.addActor(playButton);
+        stage.addActor(leftArrowMap);
+        stage.addActor(rightArrowMap);
     }
 
     /**
@@ -131,11 +148,22 @@ public class SelectionScreen implements Screen {
      */
     private void configureButtons() {
 
+        arrowStyle = skin.get("oval1", TextButton.TextButtonStyle.class);
+        arrowStyle.font = game.normalFont;
+
+        leftArrowMap = new TextButton("<", arrowStyle);
+        leftArrowMap.setPosition((Soccer.SCREEN_WIDTH / 2f) - 250, (Soccer.SCREEN_HEIGHT / 2f) + 75);
+        leftArrowMap.setBounds(leftArrowMap.getX(), leftArrowMap.getY(), 60, 35);
+
+        rightArrowMap = new TextButton(">", arrowStyle);
+        rightArrowMap.setPosition((Soccer.SCREEN_WIDTH / 2f) + 250, (Soccer.SCREEN_HEIGHT / 2f) + 75);
+        rightArrowMap.setBounds(rightArrowMap.getX(), rightArrowMap.getY(), 60, 35);
+
         arrowStyle = skin.get("oval2", TextButton.TextButtonStyle.class);
         arrowStyle.font = game.bigFont;
 
         playButton = new TextButton("PLAY", game.textButtonStyle);
-        playButton.setPosition((float) Gdx.graphics.getWidth() * .97f / 2, (float) Gdx.graphics.getHeight() - 660);
+        playButton.setPosition((float) Gdx.graphics.getWidth() * .97f / 2, (float) Gdx.graphics.getHeight() - 760);
 
         rightArrowL = new TextButton(">", arrowStyle);
         rightArrowL.setPosition(500, Gdx.graphics.getHeight() - 660);
@@ -155,6 +183,13 @@ public class SelectionScreen implements Screen {
      */
     private void handleButtonClick() {
 
+        leftArrowMap.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+
+            }
+        });
+
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -162,7 +197,6 @@ public class SelectionScreen implements Screen {
                 game.setScreen(new PlayScreen(game, game.spriteAtlas.get(index), game.spriteAtlas.get(index2)));
             }
         });
-
 
         rightArrowL.addListener(new ChangeListener() {
             @Override
@@ -243,6 +277,7 @@ public class SelectionScreen implements Screen {
         game.batch.begin();
 
         backgroundSprite.draw(game.batch, .25f);
+        mapSprite.draw(game.batch, 1);
         handleClickEvent();
 
         game.batch.end();
@@ -252,17 +287,16 @@ public class SelectionScreen implements Screen {
     /**
      * Update the sprite name label on player selection
      */
-    public void updateNames(){
+    public void updateNames() {
 
         leftPlayerName.setText(game.spriteNames.get(index));
         rightPlayerName.setText(game.spriteNames.get(index2));
     }
 
-
     /**
      * Handle the click events on the screen
      */
-    private void handleClickEvent(){
+    private void handleClickEvent() {
         if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
             game.setScreen(new PlayScreen(game, game.spriteAtlas.get(index), game.spriteAtlas.get(index2)));
         }

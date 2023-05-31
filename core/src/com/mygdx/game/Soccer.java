@@ -61,7 +61,7 @@ public class Soccer extends Game {
 
 
         normalFont = new BitmapFont(Gdx.files.internal("fonts/font-export.fnt"));
-        normalFont.getData().setScale(1f, 1f);
+        normalFont.getData().setScale(1.2f, 1.2f);
 
         mediumFont = new BitmapFont(Gdx.files.internal("fonts/sub-title-font-export.fnt"));
         mediumFont.getData().setScale(3.3f, 3.8f);

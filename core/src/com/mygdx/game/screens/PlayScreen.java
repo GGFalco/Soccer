@@ -79,6 +79,8 @@ public class PlayScreen extends Stage implements Screen {
     Label leftPlayerName;
     Label rightPlayerName;
 
+
+
     static int leftGoal;
     static int rightGoal;
     static boolean pause;
