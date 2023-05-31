@@ -1,0 +1,20 @@
+
+mappe.png
+size: 1047, 1202
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+sfondo_partita
+  rotate: false
+  xy: 0, 602
+  size: 1047, 600
+  orig: 1047, 600
+  offset: 0, 0
+  index: -1
+sfondo_partita2
+  rotate: false
+  xy: 0, 0
+  size: 1047, 600
+  orig: 1047, 600
+  offset: 0, 0
+  index: -1
