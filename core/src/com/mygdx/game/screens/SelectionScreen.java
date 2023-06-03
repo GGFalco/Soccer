@@ -3,7 +3,6 @@ package com.mygdx.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -63,6 +62,7 @@ public class SelectionScreen implements Screen {
 
     static int index;
     static int index2;
+    static int mapIndex;
 
     public SelectionScreen(final Soccer game) {
 
@@ -72,14 +72,12 @@ public class SelectionScreen implements Screen {
         this.camera = new OrthographicCamera(1920, 1080);
         index = 0;
         index2 = 0;
+        mapIndex = 0;
         camera.setToOrtho(false, 1920, 1080);
         Gdx.input.setInputProcessor(stage);
 
         mapAtlas = new TextureAtlas("mappe.atlas");
-        mapScreen = new TextureRegion(mapAtlas.findRegion("sfondo_partita"));
-        mapSprite = new Sprite(mapScreen);
-        mapSprite.setPosition((Soccer.SCREEN_WIDTH - 1000) / 2f, (Soccer.SCREEN_HEIGHT - 400) / 2f);
-        mapSprite.setScale(.35f, .35f);
+        changeMapImage(0);
 
         backgroundScreen = new Texture(Gdx.files.internal("backgrounds/selectionBackground.jpg"));
         backgroundSprite = new Sprite(backgroundScreen);
@@ -88,7 +86,7 @@ public class SelectionScreen implements Screen {
         labelStyle = skin.get("c2", Label.LabelStyle.class);
         labelStyle.font = game.bigFont;
         selectLabel = new Label("SELECT YOUR CHARACTER", labelStyle);
-        selectLabel.setPosition(780, Gdx.graphics.getHeight() - 200);
+        selectLabel.setPosition(795, Gdx.graphics.getHeight() - 200);
 
         labelStyle = game.arcadeSkin.get("default", Label.LabelStyle.class);
         labelStyle.font = game.arcadeFont;
@@ -186,7 +184,24 @@ public class SelectionScreen implements Screen {
         leftArrowMap.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (mapIndex <= 0) {
+                    mapIndex = game.mapNames.size() - 1;
+                } else {
+                    mapIndex--;
+                }
+                changeMapImage(mapIndex);
+            }
+        });
 
+        rightArrowMap.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (mapIndex >= game.mapNames.size() - 1) {
+                    mapIndex = 0;
+                } else {
+                    mapIndex++;
+                }
+                changeMapImage(mapIndex);
             }
         });
 
@@ -194,7 +209,7 @@ public class SelectionScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
 
-                game.setScreen(new PlayScreen(game, game.spriteAtlas.get(index), game.spriteAtlas.get(index2)));
+                game.setScreen(new PlayScreen(game, game.spriteAtlas.get(index), game.spriteAtlas.get(index2), game.mapNames.get(mapIndex)));
             }
         });
 
@@ -249,6 +264,18 @@ public class SelectionScreen implements Screen {
         });
     }
 
+    /**
+     * Changes the map image on the screen depending on user choice
+     *
+     * @param i index in the array that contains the names of atlas region
+     */
+    public void changeMapImage(int i) {
+        mapScreen = new TextureRegion(mapAtlas.findRegion(game.mapNames.get(i)));
+        mapSprite = new Sprite(mapScreen);
+        mapSprite.setPosition((Soccer.SCREEN_WIDTH - 1000) / 2f, (Soccer.SCREEN_HEIGHT - 400) / 2f);
+        mapSprite.setScale(.35f, .35f);
+    }
+
     @Override
     public void show() {
 
@@ -298,7 +325,7 @@ public class SelectionScreen implements Screen {
      */
     private void handleClickEvent() {
         if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
-            game.setScreen(new PlayScreen(game, game.spriteAtlas.get(index), game.spriteAtlas.get(index2)));
+            game.setScreen(new PlayScreen(game, game.spriteAtlas.get(index), game.spriteAtlas.get(index2), game.mapNames.get(mapIndex)));
         }
     }
 
