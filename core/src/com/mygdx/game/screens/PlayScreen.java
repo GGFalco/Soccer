@@ -86,7 +86,7 @@ public class PlayScreen extends Stage implements Screen {
     static boolean pause;
     static boolean goal;
 
-    public PlayScreen(final Soccer game, String atlasLeftPlayer, String atlasRightPlayer) {
+    public PlayScreen(final Soccer game, String atlasLeftPlayer, String atlasRightPlayer, String mapName) {
 
         super(new ScreenViewport(new OrthographicCamera(1920, 1080)));
 
@@ -105,7 +105,7 @@ public class PlayScreen extends Stage implements Screen {
 
         environmentConfiguration();
 
-        backgroundScreen = new Texture(Gdx.files.internal("backgrounds/sfondo_partita.png"));
+        backgroundScreen = new Texture(Gdx.files.internal("backgrounds/" + mapName + ".png"));
         backgroundSprite = new Sprite(backgroundScreen);
         backgroundSprite.setSize(Gdx.graphics.getWidth() / Soccer.PPM, Gdx.graphics.getHeight() / Soccer.PPM);
     }
