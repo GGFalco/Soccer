@@ -229,6 +229,7 @@ public class PlayScreen extends Stage implements Screen {
                 typingLabel.act(delta);
                 handleGoalEvent();
                 handleStoppedBall();
+                handleClickEvents();
 
                 game.batch.end();
                 stage.draw();
@@ -239,13 +240,14 @@ public class PlayScreen extends Stage implements Screen {
                 game.batch.setProjectionMatrix(camera.combined);
                 game.batch.begin();
 
+                handleClickEvents();
+
                 leftScoreLabel.draw(game.batch, 1);
                 rightScoreLabel.draw(game.batch, 1);
                 backgroundSprite.draw(game.batch, 1f);
                 player.draw(game.batch, 1);
                 rightPlayer.draw(game.batch, 1);
                 ball.draw(game.batch, 1);
-                System.out.println("in pausa");
 
                 game.batch.end();
 
@@ -253,7 +255,7 @@ public class PlayScreen extends Stage implements Screen {
                 break;
         }
 
-        handleClickEvents();
+
     }
 
     /**
@@ -364,7 +366,7 @@ public class PlayScreen extends Stage implements Screen {
      */
     public void handleClickEvents() {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-
+            System.out.println("ESCAPE pressed");
             if (!pause) {
                 state = State.PAUSE;
                 pause = true;
