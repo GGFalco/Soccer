@@ -44,6 +44,7 @@ public class Soccer extends Game {
 
     public java.util.List<String> spriteNames = new ArrayList<>();
     public java.util.List<String> spriteAtlas = new ArrayList<>();
+    public java.util.List<String> mapNames = new ArrayList<>();
     public final int spriteFrameCols = 7;
 
     @Override
@@ -78,6 +79,8 @@ public class Soccer extends Game {
         spriteAtlas.add("char1-walk");
         spriteAtlas.add("char2-walk");
         spriteAtlas.add("char3-walk");
+        mapNames.add("sfondo_partita");
+        mapNames.add("sfondo_partita2");
 
 
         this.setScreen(new WelcomeScreen(this));
