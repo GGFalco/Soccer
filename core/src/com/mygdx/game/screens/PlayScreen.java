@@ -9,9 +9,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Soccer;
@@ -80,6 +83,8 @@ public class PlayScreen extends Stage implements Screen {
     Label rightPlayerName;
 
 
+    TextButton resumeButton;
+    TextButton exitButton;
 
     static int leftGoal;
     static int rightGoal;
@@ -104,6 +109,7 @@ public class PlayScreen extends Stage implements Screen {
         Gdx.input.setInputProcessor(this.stage);
 
         environmentConfiguration();
+        handleButtonClicks();
 
         backgroundScreen = new Texture(Gdx.files.internal("backgrounds/" + mapName + ".png"));
         backgroundSprite = new Sprite(backgroundScreen);
@@ -162,8 +168,18 @@ public class PlayScreen extends Stage implements Screen {
         leftWall = new Wall(world, 0, 0);
         rightWall = new Wall(world, Soccer.V_WIDTH, 0);
 
+        resumeButton = new TextButton("RESUME", game.textButtonStyle);
+        resumeButton.setPosition((Soccer.SCREEN_WIDTH / 2) - 50, (Soccer.SCREEN_HEIGHT / 2) + 20);
+        resumeButton.setVisible(false);
+
+        exitButton = new TextButton("EXIT", game.textButtonStyle);
+        exitButton.setPosition((Soccer.SCREEN_WIDTH / 2) - 25, (Soccer.SCREEN_HEIGHT / 2) - 60);
+        exitButton.setVisible(false);
+
         configureInputProcessor();
 
+        stage.addActor(exitButton);
+        stage.addActor(resumeButton);
         stage.addActor(leftPlayerName);
         stage.addActor(rightPlayerName);
         stage.addActor(leftScoreLabel);
@@ -171,6 +187,24 @@ public class PlayScreen extends Stage implements Screen {
         stage.addActor(minuteLabel);
         stage.addActor(secondsLabel);
         stage.addActor(typingLabel);
+    }
+
+    public void handleButtonClicks(){
+
+        resumeButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                state = State.RUN;
+                System.out.println("Resume pressed");
+            }
+        });
+
+        exitButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent changeEvent, Actor actor) {
+                game.setScreen(new WelcomeScreen(game));
+            }
+        });
     }
 
     @Override
@@ -214,6 +248,7 @@ public class PlayScreen extends Stage implements Screen {
                 handleLeftPlayerMovements();
                 handleRightPlayerMovements();
                 handleTimer();
+                configurePauseButtons();
 
                 game.batch.setProjectionMatrix(camera.combined);
                 game.batch.begin();
@@ -238,13 +273,16 @@ public class PlayScreen extends Stage implements Screen {
             case PAUSE:
 
                 game.batch.setProjectionMatrix(camera.combined);
+                configurePauseButtons();
+
                 game.batch.begin();
 
                 handleClickEvents();
+                Gdx.input.setInputProcessor(stage);
 
                 leftScoreLabel.draw(game.batch, 1);
                 rightScoreLabel.draw(game.batch, 1);
-                backgroundSprite.draw(game.batch, 1f);
+                backgroundSprite.draw(game.batch, .80f);
                 player.draw(game.batch, 1);
                 rightPlayer.draw(game.batch, 1);
                 ball.draw(game.batch, 1);
@@ -255,6 +293,18 @@ public class PlayScreen extends Stage implements Screen {
                 break;
         }
 
+
+    }
+
+    public void configurePauseButtons(){
+        if(state == State.PAUSE){
+            resumeButton.setVisible(true);
+            exitButton.setVisible(true);
+        } else {
+            configureInputProcessor();
+            exitButton.setVisible(false);
+            resumeButton.setVisible(false);
+        }
 
     }
 
@@ -365,7 +415,7 @@ public class PlayScreen extends Stage implements Screen {
      * Handle the click events on the screen
      */
     public void handleClickEvents() {
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             System.out.println("ESCAPE pressed");
             if (!pause) {
                 state = State.PAUSE;
