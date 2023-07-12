@@ -169,11 +169,11 @@ public class PlayScreen extends Stage implements Screen {
         rightWall = new Wall(world, Soccer.V_WIDTH, 0);
 
         resumeButton = new TextButton("RESUME", game.textButtonStyle);
-        resumeButton.setPosition((Soccer.SCREEN_WIDTH / 2) - 50, (Soccer.SCREEN_HEIGHT / 2) + 20);
+        resumeButton.setPosition((Soccer.SCREEN_WIDTH / 2f) - 50, (Soccer.SCREEN_HEIGHT / 2f) + 20);
         resumeButton.setVisible(false);
 
         exitButton = new TextButton("EXIT", game.textButtonStyle);
-        exitButton.setPosition((Soccer.SCREEN_WIDTH / 2) - 25, (Soccer.SCREEN_HEIGHT / 2) - 60);
+        exitButton.setPosition((Soccer.SCREEN_WIDTH / 2f) - 25, (Soccer.SCREEN_HEIGHT / 2f) - 60);
         exitButton.setVisible(false);
 
         configureInputProcessor();
@@ -202,6 +202,7 @@ public class PlayScreen extends Stage implements Screen {
         exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
+                state = State.RUN;
                 game.setScreen(new WelcomeScreen(game));
             }
         });
