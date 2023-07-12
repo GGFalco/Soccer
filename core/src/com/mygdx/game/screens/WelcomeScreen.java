@@ -33,7 +33,7 @@ public class WelcomeScreen implements Screen {
         this.game = game;
         this.skin = game.skin;
         this.stage = new Stage();
-        this.camera = new OrthographicCamera(1920, 1080);
+        this.camera = new OrthographicCamera();
         camera.setToOrtho(false, 1920, 1080);
         Gdx.input.setInputProcessor(stage);
 
@@ -68,7 +68,7 @@ public class WelcomeScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
-
+        game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
 
         backgroundSprite.draw(game.batch, .35f);
