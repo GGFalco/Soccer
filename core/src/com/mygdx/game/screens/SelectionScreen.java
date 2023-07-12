@@ -69,7 +69,7 @@ public class SelectionScreen implements Screen {
         this.game = game;
         this.skin = game.skin;
         this.stage = new Stage();
-        this.camera = new OrthographicCamera(1920, 1080);
+        this.camera = new OrthographicCamera();
         index = 0;
         index2 = 0;
         mapIndex = 0;
@@ -301,6 +301,7 @@ public class SelectionScreen implements Screen {
 
         updateNames();
 
+        game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
 
         backgroundSprite.draw(game.batch, .25f);
